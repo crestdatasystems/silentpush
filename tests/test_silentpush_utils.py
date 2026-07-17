@@ -13,6 +13,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+import csv
 import unittest
 from unittest.mock import Mock, patch
 
@@ -390,6 +391,7 @@ class TestInvokeAPI(unittest.TestCase):
         """Set up method for the tests."""
         self.mock_connector = Mock()
         self.mock_connector.config = {"verify_server_cert": False}
+        self.mock_connector._verify = False
         self.util = SilentpushUtils(self.mock_connector)
         return super().setUp()
 
@@ -412,6 +414,45 @@ class TestInvokeAPI(unittest.TestCase):
         status, response = self.util.invoke_api(mock_get, "http://example.com")
         self.assertFalse(status)
         self.assertIsInstance(response, requests.exceptions.ConnectTimeout)
+
+
+class TestExportSecurityHelpers(unittest.TestCase):
+    """Test export URL confinement and spreadsheet-safe CSV output."""
+
+    @parameterized.expand(
+        [
+            ["default_https", "https://app.silentpush.com/app/v1/export/organization-exports/feed.csv"],
+            ["explicit_443", "https://app.silentpush.com:443/app/v1/export/organization-exports/feed.csv?download=true"],
+        ]
+    )
+    def test_validate_export_url_pass(self, _, url):
+        self.assertTrue(SilentpushUtils._validate_export_url(url))
+
+    @parameterized.expand(
+        [
+            ["http", "http://app.silentpush.com/app/v1/export/feed.csv"],
+            ["wrong_host", "https://attacker.example/app/v1/export/feed.csv"],
+            ["host_suffix", "https://app.silentpush.com.attacker.example/app/v1/export/feed.csv"],
+            ["credentials", "https://user@app.silentpush.com/app/v1/export/feed.csv"],
+            ["non_default_port", "https://app.silentpush.com:8443/app/v1/export/feed.csv"],
+            ["wrong_path", "https://app.silentpush.com/admin/feed.csv"],
+            ["path_traversal", "https://app.silentpush.com/app/v1/export/../admin/feed.csv"],
+            ["encoded_path_traversal", "https://app.silentpush.com/app/v1/export/%2e%2e/admin/feed.csv"],
+            ["fragment", "https://app.silentpush.com/app/v1/export/feed.csv#fragment"],
+        ]
+    )
+    def test_validate_export_url_fail(self, _, url):
+        self.assertFalse(SilentpushUtils._validate_export_url(url))
+
+    def test_sanitize_csv_neutralizes_formula_cells(self):
+        response = 'normal,=formula,+sum,-value,@command,"\tTabbed","\rCarriage"\n'
+        expected = "normal,'=formula,'+sum,'-value,'@command,'\tTabbed,'\rCarriage\n"
+
+        self.assertEqual(SilentpushUtils._sanitize_csv(response), expected)
+
+    def test_sanitize_csv_rejects_malformed_input(self):
+        with self.assertRaises(csv.Error):
+            SilentpushUtils._sanitize_csv('"unterminated')
 
 
 class TestValidateDropdownMethod(unittest.TestCase):

@@ -143,7 +143,7 @@ and limitations under the License.
                       <td class="cell-width">
                         {% if domain.domain %}
                           <a href="javascript:;"
-                             onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ domain.domain }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ domain.domain|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             <span class="fa fa-caret-down" style="font-size: smaller;">{{ domain.domain }}</span>
                           </a>
                         {% else %}
@@ -153,7 +153,7 @@ and limitations under the License.
                       <td>
                         {% if domain.query %}
                           <a href="javascript:;"
-                             onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ domain.query }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ domain.query|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             <span class="fa fa-caret-down" style="font-size: smaller;">{{ domain.query }}</span>
                           </a>
                         {% else %}
@@ -171,7 +171,7 @@ and limitations under the License.
                       <td>
                         {% if domain.registrar %}
                           <a href="javascript:;"
-                             onclick="context_menu(this, [{'contains': ['silent push registrar'], 'value': '{{ domain.registrar }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': ['silent push registrar'], 'value': '{{ domain.registrar|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             <span class="fa fa-caret-down" style="font-size: smaller;">{{ domain.registrar }}</span>
                           </a>
                         {% else %}

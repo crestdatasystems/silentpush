@@ -131,14 +131,14 @@ and limitations under the License.
                       <tr>
                         <td class="cell-width">
                           <a href="javascript:;"
-                             onclick="context_menu(this, [{'contains': [ 'domain' ], 'value': '{{ tag.domain }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': [ 'domain' ], 'value': '{{ tag.domain|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             {{ tag.domain }}
                             &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                           </a>
                         </td>
                         <td>
                           <a href="javascript:;"
-                             onclick="context_menu(this, [{'contains': [ 'asn' ], 'value': '{{ tag.tag }}' }], 0, {{ container.id }}, null, false);">
+                             onclick="context_menu(this, [{'contains': [ 'asn' ], 'value': '{{ tag.tag|escapejs }}' }], 0, {{ container.id }}, null, false);">
                             {{ tag.tag }}
                             &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                           </a>

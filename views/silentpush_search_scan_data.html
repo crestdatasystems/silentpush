@@ -134,7 +134,7 @@ and limitations under the License.
                     <td>
                       {% if scandata.ip %}
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': [ 'ip', 'silent push ip' ], 'value': '{{ scandata.ip }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': [ 'ip', 'silent push ip' ], 'value': '{{ scandata.ip|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;">{{ scandata.ip }}</span>
                         </a>
                       {% else %}
@@ -146,7 +146,7 @@ and limitations under the License.
                     <td>
                       {% if scandata.domain %}
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': [ 'domain' ], 'value': '{{ scandata.domain }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': [ 'domain' ], 'value': '{{ scandata.domain|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;">{{ scandata.domain }}</span>
                         </a>
                       {% else %}
@@ -158,7 +158,7 @@ and limitations under the License.
                     <td>
                       {% if scandata.hostname %}
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': [ 'ip', 'domain' ], 'value': '{{ scandata.hostname }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': [ 'ip', 'domain' ], 'value': '{{ scandata.hostname|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;">{{ scandata.hostname }}</span>
                         </a>
                       {% else %}
@@ -179,7 +179,7 @@ and limitations under the License.
                     <td>
                       {% if scandata.ssl.CHV %}
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': [ 'silent push chv' ], 'value': '{{ scandata.ssl.CHV }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': [ 'silent push chv' ], 'value': '{{ scandata.ssl.CHV|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;">{{ scandata.ssl.CHV }}</span>
                         </a>
                       {% else %}

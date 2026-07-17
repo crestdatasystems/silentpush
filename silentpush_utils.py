@@ -13,11 +13,14 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+import csv
+import io
 import json
 import re
 import tempfile
 import time
 import uuid
+from urllib.parse import unquote, urlsplit
 
 import phantom.app as phantom
 import phantom.rules as ph_rules
@@ -205,11 +208,17 @@ class SilentpushUtils:
             message = "No data found"
             return RetVal(action_result.set_status(phantom.APP_ERROR, f"Error adding file to the vault: {message}"), None)
 
+        file_extension = "csv"
+        try:
+            response = self._sanitize_csv(response)
+        except csv.Error:
+            file_extension = "txt"
+
         with tempfile.NamedTemporaryFile(mode="w", dir=Vault.get_vault_tmp_dir(), delete=False, encoding="utf-8") as f:
             tmp_file_path = f.name
             f.write(response)
         feed_uuid = self.extract_uuid(endpoint) or uuid.uuid1()
-        file_name = f"feed_{feed_uuid}.csv"
+        file_name = f"feed_{feed_uuid}.{file_extension}"
         self._connector.save_progress(f"Filename for vault attachment: {file_name}")
         success, msg, vault_id = ph_rules.vault_add(
             container=self._connector.get_container_id(),
@@ -220,6 +229,42 @@ class SilentpushUtils:
             return RetVal(action_result.set_status(phantom.APP_ERROR, f"Error adding file to the vault, Error: {msg}"), None)
 
         return RetVal(action_result.set_status(phantom.APP_SUCCESS, consts.ACTION_GET_DATA_EXPORT_SUCCESS_RESPONSE), vault_id)
+
+    @staticmethod
+    def _sanitize_csv(response):
+        """Neutralize spreadsheet formula prefixes in every CSV cell."""
+        source = io.StringIO(response, newline="")
+        destination = io.StringIO(newline="")
+        reader = csv.reader(source, strict=True)
+        writer = csv.writer(destination, lineterminator="\n")
+
+        for row in reader:
+            writer.writerow([f"'{cell}" if cell.startswith(("=", "+", "-", "@", "\t", "\r")) else cell for cell in row])
+
+        return destination.getvalue()
+
+    @staticmethod
+    def _validate_export_url(url):
+        """Restrict dynamic export downloads to the documented Silent Push endpoint."""
+        try:
+            parsed = urlsplit(url)
+            decoded_path = unquote(parsed.path)
+            port = parsed.port
+        except (TypeError, ValueError):
+            return False
+
+        path_segments = decoded_path.split("/")
+        return (
+            parsed.scheme == "https"
+            and parsed.hostname == consts.EXPORT_DOWNLOAD_HOST
+            and port in (None, 443)
+            and parsed.username is None
+            and parsed.password is None
+            and not parsed.fragment
+            and parsed.path.startswith(consts.EXPORT_DOWNLOAD_PATH_PREFIX)
+            and decoded_path.startswith(consts.EXPORT_DOWNLOAD_PATH_PREFIX)
+            and not any(segment in (".", "..") for segment in path_segments)
+        )
 
     def make_rest_call(self, endpoint, action_result, method="get", error_path=None, **kwargs):
         resp_json = None
@@ -233,7 +278,13 @@ class SilentpushUtils:
         url = f"{consts.BASE_URL.strip('/')}{endpoint}"
 
         if self._connector.get_action_identifier() == "get_data_export":
+            if not self._validate_export_url(endpoint):
+                return RetVal(
+                    action_result.set_status(phantom.APP_ERROR, "Feed URL must use the documented Silent Push HTTPS export endpoint"),
+                    resp_json,
+                )
             url = endpoint
+            kwargs["allow_redirects"] = False
 
         kwargs["headers"] = {**self.get_auth_headers(self._connector.config), **(kwargs.get("headers") or {})}
 
@@ -262,7 +313,7 @@ class SilentpushUtils:
         if self._connector.get_action_identifier() == "get_data_export":
             timeout = consts.EXPORT_REQUEST_DEFAULT_TIMEOUT
         try:
-            r = request_func(url, timeout=timeout, verify=self._connector.config.get("verify_server_cert", False), **kwargs)
+            r = request_func(url, timeout=timeout, verify=self._connector._verify, **kwargs)
             return True, r
         except Exception as e:
             if "ConnectTimeoutError" in str(e) and counter < consts.MAX_RETRIES:

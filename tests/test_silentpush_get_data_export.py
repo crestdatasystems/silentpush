@@ -65,6 +65,7 @@ class SilentpushAction(unittest.TestCase):
             timeout=consts.EXPORT_REQUEST_DEFAULT_TIMEOUT,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
             verify=False,
+            allow_redirects=False,
         )
 
     def test_get_data_export_invalid(self, mock_get):
@@ -89,7 +90,18 @@ class SilentpushAction(unittest.TestCase):
             timeout=180,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
+            allow_redirects=False,
         )
+
+    def test_get_data_export_rejects_untrusted_host(self, mock_get):
+        """Reject an untrusted export origin before attaching the API key."""
+        self.test_json["parameters"] = [{"feed_url": "https://attacker.example/app/v1/export/feed.csv"}]
+
+        ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
+        ret_val = json.loads(ret_val)
+
+        self.assertEqual(ret_val["status"], "failed")
+        mock_get.assert_not_called()
 
 
 class MockResponse:

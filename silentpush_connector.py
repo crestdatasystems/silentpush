@@ -74,6 +74,7 @@ class SilentpushConnector(BaseConnector):
         self.validator = Validator()
         # get the asset config
         self.config = self.get_config()
+        self._verify = self.config.get("verify_server_cert", True)
 
         return phantom.APP_SUCCESS
 

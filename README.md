@@ -15,6 +15,7 @@ This table lists the configuration variables required to operate Silent Push. Th
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
 **api_key** | required | password | Silent Push API Key |
+**verify_server_cert** | optional | boolean | Verify the Silent Push server certificate for HTTPS connections |
 
 ### Supported Actions
 
@@ -1726,14 +1727,14 @@ The Feed URL can be obtained from the Silent Push platform. Go to Data Export > 
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**feed_url** | required | Feed URL | string | |
+**feed_url** | required | Silent Push export URL under https://app.silentpush.com/app/v1/export/ | string | |
 
 #### Action Output
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
 action_result.status | string | | success failed |
-action_result.parameter.feed_url | string | | https://abc.test.com/api/v2/export/organisation-feeds/5000000-4444-aaaa-bbbb-222222222222_enrich.csv |
+action_result.parameter.feed_url | string | | https://app.silentpush.com/app/v1/export/organization-exports/5000000-4444-aaaa-bbbb-222222222222_enrich.csv |
 action_result.data.\*.vault_id | string | `vault id` | 666666d9d91111111696aa111111e311111100ab |
 action_result.data.\*.errors.\*.code | string | | invalid |
 action_result.data.\*.errors.\*.message | string | | invalid file format |
