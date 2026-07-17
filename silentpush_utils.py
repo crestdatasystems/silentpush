@@ -13,6 +13,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+import ast
 import csv
 import io
 import json
@@ -217,7 +218,7 @@ class SilentpushUtils:
         with tempfile.NamedTemporaryFile(mode="w", dir=Vault.get_vault_tmp_dir(), delete=False, encoding="utf-8") as f:
             tmp_file_path = f.name
             f.write(response)
-        feed_uuid = self.extract_uuid(endpoint) or uuid.uuid1()
+        feed_uuid = self.extract_uuid(endpoint) or uuid.uuid4()
         file_name = f"feed_{feed_uuid}.{file_extension}"
         self._connector.save_progress(f"Filename for vault attachment: {file_name}")
         success, msg, vault_id = ph_rules.vault_add(
@@ -403,7 +404,7 @@ class Validator:
             parameter = json.loads(parameter.replace("'", "'"))
         except Exception:
             try:
-                parameter = eval(parameter)
+                parameter = ast.literal_eval(parameter)
             except Exception:
                 return action_result.set_status(phantom.APP_ERROR, consts.ERROR_INVALID_JSON_PARAM.format(key=key)), None
 
