@@ -12,7 +12,7 @@
 {% block widget_content %}
   <!-- Main Start Block -->
   <!--File: silentpush_forward_and_reverse_padns_lookup.html
-Copyright (c) 2024-2025 Splunk Inc.
+Copyright (c) 2024-2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ and limitations under the License.
                 </td>
                 <td>
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['silent push job id'], 'value': '{{ result.data.0.response.job_status.job_id }}' }], 0, {{ container.id }}, null, false);">
+                     onclick="context_menu(this, [{'contains': ['silent push job id'], 'value': '{{ result.data.0.response.job_status.job_id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                     {{ result.data.0.response.job_status.job_id }}
                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                   </a>
@@ -197,7 +197,7 @@ and limitations under the License.
                     <td>
                       {% if record.query %}
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': ['silent push query'], 'value': '{{ record.query }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': ['silent push query'], 'value': '{{ record.query|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           <span class="fa fa-caret-down" style="font-size: smaller;">{{ record.query }}</span>
                         </a>
                       {% else %}
@@ -207,7 +207,7 @@ and limitations under the License.
                     <td>
                       {% if record.answer %}
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': ['silent push query', 'silent push hash', 'domain', 'ip' ], 'value': '{{ record.answer }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': ['silent push query', 'silent push hash', 'domain', 'ip' ], 'value': '{{ record.answer|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           <span class="fa fa-caret-down" style="font-size: smaller;">{{ record.answer }}</span>
                         </a>
                       {% else %}
@@ -217,28 +217,28 @@ and limitations under the License.
                     {% if record.mxhash %}
                       <td>
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': ['silent push hash'], 'value': '{{ record.mxhash }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': ['silent push hash'], 'value': '{{ record.mxhash|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           <span class="fa fa-caret-down" style="font-size: smaller;">{{ record.mxhash | default:"None" }}</span>
                         </a>
                       </td>
                     {% elif record.nshash %}
                       <td>
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': ['silent push hash'], 'value': '{{ record.nshash }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': ['silent push hash'], 'value': '{{ record.nshash|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           <span class="fa fa-caret-down" style="font-size: smaller;">{{ record.nshash | default:"None" }}</span>
                         </a>
                       </td>
                     {% elif record.soahash %}
                       <td>
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': [ 'silent push hash'], 'value': '{{ record.soahash }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': [ 'silent push hash'], 'value': '{{ record.soahash|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           <span class="fa fa-caret-down" style="font-size: smaller;">{{ record.soahash | default:"None" }}</span>
                         </a>
                       </td>
                     {% elif record.txthash %}
                       <td>
                         <a href="javascript:;"
-                           onclick="context_menu(this, [{'contains': [ 'silent push hash'], 'value': '{{ record.txthash }}' }], 0, {{ container.id }}, null, false);">
+                           onclick="context_menu(this, [{'contains': [ 'silent push hash'], 'value': '{{ record.txthash|escapejs }}' }], 0, {{ container.id }}, null, false);">
                           <span class="fa fa-caret-down" style="font-size: smaller;">{{ record.txthash | default:"None" }}</span>
                         </a>
                       </td>

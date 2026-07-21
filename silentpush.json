@@ -10,7 +10,7 @@
     "python_version": "3",
     "product_version_regex": ".*",
     "publisher": "Splunk Community",
-    "license": "Copyright (c) 2024-2025 Splunk Inc.",
+    "license": "Copyright (c) 2024-2026 Splunk Inc.",
     "app_version": "1.1.0",
     "utctime_updated": "2025-05-02T11:01:56.723311Z",
     "package_name": "phantom_silentpush",
@@ -27,6 +27,12 @@
             "data_type": "password",
             "required": true,
             "order": 0
+        },
+        "verify_server_cert": {
+            "description": "Verify the Silent Push server certificate for HTTPS connections",
+            "data_type": "boolean",
+            "default": true,
+            "order": 1
         }
     },
     "actions": [
@@ -9410,7 +9416,7 @@
             "read_only": true,
             "parameters": {
                 "feed_url": {
-                    "description": "Feed URL",
+                    "description": "Silent Push export URL under https://app.silentpush.com/app/v1/export/",
                     "required": true,
                     "order": 0,
                     "data_type": "string"
@@ -9429,7 +9435,7 @@
                     "data_path": "action_result.parameter.feed_url",
                     "data_type": "string",
                     "example_values": [
-                        "https://abc.test.com/api/v2/export/organisation-feeds/5000000-4444-aaaa-bbbb-222222222222_enrich.csv"
+                        "https://app.silentpush.com/app/v1/export/organization-exports/5000000-4444-aaaa-bbbb-222222222222_enrich.csv"
                     ],
                     "column_order": 0,
                     "column_name": "Feed URL"
@@ -9492,5 +9498,11 @@
             },
             "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip39_dependencies": {
+        "wheel": []
+    },
+    "pip313_dependencies": {
+        "wheel": []
+    }
 }

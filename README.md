@@ -1,9 +1,9 @@
 # Silent Push
 
-Publisher: Splunk Community \
-Connector Version: 1.1.0 \
-Product Vendor: Silent Push \
-Product Name: Silent Push \
+Publisher: Splunk Community <br>
+Connector Version: 1.1.0 <br>
+Product Vendor: Silent Push <br>
+Product Name: Silent Push <br>
 Minimum Product Version: 6.3.0
 
 This connector integrates with the Silent Push system to gain insights into domain/IP information, reputations, enrichment, and infratag related details. It also provides functionality to live-scan URLs and take screenshots of them. Additionally, it allows fetching future attack feeds from the Silent Push system
@@ -15,37 +15,38 @@ This table lists the configuration variables required to operate Silent Push. Th
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
 **api_key** | required | password | Silent Push API Key |
+**verify_server_cert** | optional | boolean | Verify the Silent Push server certificate for HTTPS connections |
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Initiate a connection to the Silent Push system to validate the asset configuration \
-[list domain information](#action-list-domain-information) - Get domain information along with Silent Push risk score and live whois information for multiple domains \
-[get domain certificates](#action-get-domain-certificates) - Get certificate data collected from domain scanning \
-[search domains](#action-search-domains) - Search for domains with optional filters \
-[list domain infratags](#action-list-domain-infratags) - Get infratags for multiple domains with optional clustering \
-[get enrichment data](#action-get-enrichment-data) - Retrieve comprehensive enrichment information for a given resource (domain, IPv4, or IPv6) \
-[list ip information](#action-list-ip-information) - Get IP information for multiple IPv4s and IPv6s \
-[get asn reputation](#action-get-asn-reputation) - Retrieve the reputation information for an Autonomous System Number (ASN) \
-[get asn takedown reputation](#action-get-asn-takedown-reputation) - Retrieve the takedown reputation information for an Autonomous System Number (ASN) \
-[get ipv4 reputation](#action-get-ipv4-reputation) - Retrieve the reputation information for an IPv4 \
-[get job status](#action-get-job-status) - Retrieve status of running job or results from completed job \
-[get nameserver reputation](#action-get-nameserver-reputation) - Retrieve the reputation information for an nameserver \
-[get subnet reputation](#action-get-subnet-reputation) - Retrieve the reputation information for subnet \
-[get asns seen for domain](#action-get-asns-seen-for-domain) - Retrieve the takedown reputation information for an Autonomous System Number (ASN) \
-[forward padns lookup](#action-forward-padns-lookup) - Forward PADNS lookup \
-[reverse padns lookup](#action-reverse-padns-lookup) - Reverse PADNS lookup \
-[density lookup](#action-density-lookup) - Get information based on numerous granular DNS/IP parameters \
-[search scan data](#action-search-scan-data) - Search the Silent Push scan data repositories \
-[live url scan](#action-live-url-scan) - Scan a URL to get metadata on what it is hosted \
-[get indicators of future attack feed](#action-get-indicators-of-future-attack-feed) - Get indicators of future attack feed from the Silent Push platform \
-[live url screenshot](#action-live-url-screenshot) - This action generate a screenshot for a URL and store it inside the vault \
+[test connectivity](#action-test-connectivity) - Initiate a connection to the Silent Push system to validate the asset configuration <br>
+[list domain information](#action-list-domain-information) - Get domain information along with Silent Push risk score and live whois information for multiple domains <br>
+[get domain certificates](#action-get-domain-certificates) - Get certificate data collected from domain scanning <br>
+[search domains](#action-search-domains) - Search for domains with optional filters <br>
+[list domain infratags](#action-list-domain-infratags) - Get infratags for multiple domains with optional clustering <br>
+[get enrichment data](#action-get-enrichment-data) - Retrieve comprehensive enrichment information for a given resource (domain, IPv4, or IPv6) <br>
+[list ip information](#action-list-ip-information) - Get IP information for multiple IPv4s and IPv6s <br>
+[get asn reputation](#action-get-asn-reputation) - Retrieve the reputation information for an Autonomous System Number (ASN) <br>
+[get asn takedown reputation](#action-get-asn-takedown-reputation) - Retrieve the takedown reputation information for an Autonomous System Number (ASN) <br>
+[get ipv4 reputation](#action-get-ipv4-reputation) - Retrieve the reputation information for an IPv4 <br>
+[get job status](#action-get-job-status) - Retrieve status of running job or results from completed job <br>
+[get nameserver reputation](#action-get-nameserver-reputation) - Retrieve the reputation information for an nameserver <br>
+[get subnet reputation](#action-get-subnet-reputation) - Retrieve the reputation information for subnet <br>
+[get asns seen for domain](#action-get-asns-seen-for-domain) - Retrieve the takedown reputation information for an Autonomous System Number (ASN) <br>
+[forward padns lookup](#action-forward-padns-lookup) - Forward PADNS lookup <br>
+[reverse padns lookup](#action-reverse-padns-lookup) - Reverse PADNS lookup <br>
+[density lookup](#action-density-lookup) - Get information based on numerous granular DNS/IP parameters <br>
+[search scan data](#action-search-scan-data) - Search the Silent Push scan data repositories <br>
+[live url scan](#action-live-url-scan) - Scan a URL to get metadata on what it is hosted <br>
+[get indicators of future attack feed](#action-get-indicators-of-future-attack-feed) - Get indicators of future attack feed from the Silent Push platform <br>
+[live url screenshot](#action-live-url-screenshot) - This action generate a screenshot for a URL and store it inside the vault <br>
 [get data export](#action-get-data-export) - Get data for Organisation feeds and download as csv file in vault
 
 ## action: 'test connectivity'
 
 Initiate a connection to the Silent Push system to validate the asset configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -60,7 +61,7 @@ No Output
 
 Get domain information along with Silent Push risk score and live whois information for multiple domains
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -249,7 +250,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get certificate data collected from domain scanning
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -322,7 +323,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Search for domains with optional filters
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -377,7 +378,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get infratags for multiple domains with optional clustering
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Retrieve infratags for specified domains. It allows querying infratags based on live lookup data or PADNS data, and provides options for handling self-hosted infrastructure \<self|full>. Additionally, it allows specifying a timestamp to retrieve infratags based on PADNS data within a specific time range. It accepts dates in yyyy-mm-dd format, epochs in number format, or seconds in negative number format for relative time. The "clusters" parameter enables grouping the infratags into clusters for further analysis.
@@ -424,7 +425,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve comprehensive enrichment information for a given resource (domain, IPv4, or IPv6)
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 The action provides a wealth of enrichment information for a specified `resource`. it can be a domain, IPv4, or IPv6 address. This includes a variety of indicators such as DGA probability, Alexa rank, and dynamic domain indicators, alongside URL shortener usage, essential domain details like registration dates and registrar data, and security warning flags for open directories, expired certificates, or open S3 buckets. It also encompasses IP & ASN diversity scores, listing scores, nameserver reputation data, server changes, and a comprehensive Silent Push risk score for Domain. For IPv4 and IPv6 addresses, include ASN-related reputational scores, subnet information, IP density metrics, reputational scoring, expired certificates, open directories, geolocation details, and a Silent Push risk score tailored for IPs. This single action aggregates a multifaceted set of data points to deliver a deep, nuanced view of a resource's online presence and security profile, equipping users with critical insights for cybersecurity analysis and threat intelligence.
@@ -739,7 +740,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get IP information for multiple IPv4s and IPv6s
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -822,7 +823,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve the reputation information for an Autonomous System Number (ASN)
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Retrieve the takedown reputation history for a given ASN. ASN reputation scores are a measure of the trustworthiness and reputation of the networks associated with a particular ASN.
@@ -863,7 +864,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve the takedown reputation information for an Autonomous System Number (ASN)
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Return the takedown reputation information for an ASN. An ASN's takedown reputation is a measure of the ability and willingness of a network's service provider to take action to mitigate cyber threats associated with the network's services.
@@ -906,7 +907,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve the reputation information for an IPv4
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Retrieve the reputation information for an IPv4. An IPv4 address' reputation score is a measure of the trustworthiness and reputation of an individual IPv4 address.
@@ -943,7 +944,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve status of running job or results from completed job
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Fetch the status or results of a specified job using the job ID. It also provides optional parameters like 'max_wait' to allow customization of the wait time for results and 'result_type' to include details in the response, including options for 'Status', 'Include Metadata', and 'Exclude Metadata'. 'Status' allows users to specify whether to receive only job status, even if the result is available. 'Include Metadata' ensures metadata inclusion in results, overriding the original request if necessary. Conversely, 'Exclude Metadata' guarantees metadata omission from results, disregarding any metadata-inclusive original requests.
@@ -1020,7 +1021,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve the reputation information for an nameserver
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Retrieve historical reputation data for the specified name server, including the reputation score and, optionally, the details used to calculate this score. The 'nameserver' parameter specifies the target name server, the 'limit' parameter specifies the number of results to return, and the 'explain' parameter determines whether to include the calculation details.
@@ -1057,7 +1058,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve the reputation information for subnet
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Fetch a list of IPv4 subnets ranked by their reputation scores, which reflect the trustworthiness and security level of the subnets. It includes the option to specify the number of results to return with the 'limit' parameter and to retrieve in-depth details used to calculate the reputation scores with the 'explain' parameter. When 'explain' is set to 1, the response will include information such as the number of active IPs within the subnet, the number of listed IPs, and the allocation age of the subnet.
@@ -1094,7 +1095,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Retrieve the takedown reputation information for an Autonomous System Number (ASN)
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Retrieve a list of Autonomous System Numbers (ASNs) associated with A records for the specified domain name, including any subdomains, observed within the last 30 days. The action provides insights into the network infrastructure used by the domain, which can be useful for tracking hosting patterns or changes in domain configuration.
@@ -1129,7 +1130,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Forward PADNS lookup
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Scan through Silent Push's passive DNS data and obtain information based on various parameters. The first_seen_after, first_seen_before, last_seen_before, last_seen_after and as_of parameters have the following time input options: <ul> <li>fixed date: yyyy-mm-dd (2021-07-09)</li> <li>fixed time in epoch format: number (1625834953)</li> <li>relative time seconds ago: negative number (-172800)</li> <li>relative fixed time period ago: negative number with time period (-36h / -5d / -3w / -6m) h: hours, d: days, w: weeks, m: months</li></ul>.
@@ -1209,7 +1210,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Reverse PADNS lookup
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Scan through Silent Push's passive DNS data and obtain information based on various parameters. The first_seen_after, first_seen_before, last_seen_before, last_seen_after and as_of parameters have the following time input options: <ul> <li>fixed date: yyyy-mm-dd (2021-07-09)</li> <li>fixed time in epoch format: number (1625834953)</li> <li>relative time seconds ago: negative number (-172800)</li> <li>relative fixed time period ago: negative number with time period (-36h / -5d / -3w / -6m) h: hours, d: days, w: weeks, m: months</li></ul>.
@@ -1290,7 +1291,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get information based on numerous granular DNS/IP parameters
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Retrieve domain density based on qtype and query. Required query types include nssrv, mxsrv, ipv4, ipv6, and asn. Optional scope parameter allows for exact or near match results based on the qtype. For ipv4, specify ip, subnet, subnet_ips, asn, or asn_subnets. For asn, choose asn or asn_subnets. For nssrv or mxsrv, select host, domain, or subdomain. For chv, select chv or chv_analysis based on the query.
@@ -1348,7 +1349,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Search the Silent Push scan data repositories
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 #### Action Parameters
@@ -1473,7 +1474,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Scan a URL to get metadata on what it is hosted
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 Retrieve hosting metadata by scanning a provided URL. Parameters include URL, platform (Desktop, Mobile, Crawler), OS (Windows, Linux, MacOS, iOS, Android), browser (Firefox, Chrome, Edge, Safari), and region (US, EU, AS, TOR) .
@@ -1616,7 +1617,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get indicators of future attack feed from the Silent Push platform
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 This action connects to the Silent Push system to query for potential future attacks, utilizing a feed UUID for data filtering. Additionally, it supports pagination through parameters page_no and page_size. For instance, if the total records are 600 and the page size is set to 200, it will create three pages, and setting page_no to 2 will return records from 201 to 400.
@@ -1683,7 +1684,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 This action generate a screenshot for a URL and store it inside the vault
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -1717,7 +1718,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Get data for Organisation feeds and download as csv file in vault
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 The Feed URL can be obtained from the Silent Push platform. Go to Data Export > Organization Exports then for a specific feed select Automate Export and click on 'Copy API Endpoint' to get the feed URL.
@@ -1726,14 +1727,14 @@ The Feed URL can be obtained from the Silent Push platform. Go to Data Export > 
 
 PARAMETER | REQUIRED | DESCRIPTION | TYPE | CONTAINS
 --------- | -------- | ----------- | ---- | --------
-**feed_url** | required | Feed URL | string | |
+**feed_url** | required | Silent Push export URL under https://app.silentpush.com/app/v1/export/ | string | |
 
 #### Action Output
 
 DATA PATH | TYPE | CONTAINS | EXAMPLE VALUES
 --------- | ---- | -------- | --------------
 action_result.status | string | | success failed |
-action_result.parameter.feed_url | string | | https://abc.test.com/api/v2/export/organisation-feeds/5000000-4444-aaaa-bbbb-222222222222_enrich.csv |
+action_result.parameter.feed_url | string | | https://app.silentpush.com/app/v1/export/organization-exports/5000000-4444-aaaa-bbbb-222222222222_enrich.csv |
 action_result.data.\*.vault_id | string | `vault id` | 666666d9d91111111696aa111111e311111100ab |
 action_result.data.\*.errors.\*.code | string | | invalid |
 action_result.data.\*.errors.\*.message | string | | invalid file format |
@@ -1746,7 +1747,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

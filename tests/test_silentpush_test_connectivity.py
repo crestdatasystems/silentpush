@@ -1,6 +1,6 @@
 # File: test_silentpush_test_connectivity.py
 #
-# Copyright (c) 2024-2025 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -74,5 +74,23 @@ class TestConnectivityAction(unittest.TestCase):
             f"{self.test_json['config']['base_url']}{consts.TEST_CONNECTIVITY_ENDPOINT}",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
+            headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
+        )
+
+    def test_connectivity_verifies_certificates_by_default(self, mock_get):
+        """Use certificate verification for assets saved before the setting existed."""
+        del self.test_json["config"]["verify_server_cert"]
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
+        mock_get.return_value.json.return_value = {}
+
+        ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
+        ret_val = json.loads(ret_val)
+
+        self.assertEqual(ret_val["status"], "success")
+        mock_get.assert_called_with(
+            f"{self.test_json['config']['base_url']}{consts.TEST_CONNECTIVITY_ENDPOINT}",
+            timeout=consts.REQUEST_DEFAULT_TIMEOUT,
+            verify=True,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
         )

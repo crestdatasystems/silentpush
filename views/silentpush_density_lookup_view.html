@@ -12,7 +12,7 @@
 {% block widget_content %}
   <!-- Main Start Block -->
   <!--File: silentpush_list_domain_infratags_view.html
-Copyright (c) 2024-2025 Splunk Inc.
+Copyright (c) 2024-2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -180,7 +180,7 @@ and limitations under the License.
                         <tr>
                           <td>
                             <a href="javascript:;"
-                               onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ value.ipv4 }}' }], 0, {{ container.id }}, null, false);">
+                               onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ value.ipv4|escapejs|escapejs }}' }], 0, {{ container.id }}, null, false);">
                               {{ value.ipv4 }}
                               <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a>
@@ -201,7 +201,7 @@ and limitations under the License.
                         <tr>
                           <td>
                             <a href="javascript:;"
-                               onclick="context_menu(this, [{'contains': ['silent push query', 'silent push hash'], 'value': '{{ value.nshash }}' }], 0, {{ container.id }}, null, false);">
+                               onclick="context_menu(this, [{'contains': ['silent push query', 'silent push hash'], 'value': '{{ value.nshash|escapejs|escapejs }}' }], 0, {{ container.id }}, null, false);">
                               {{ value.nshash }}
                               <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a>
@@ -222,7 +222,7 @@ and limitations under the License.
                         <tr>
                           <td>
                             <a href="javascript:;"
-                               onclick="context_menu(this, [{'contains': ['silent push chv'], 'value': '{{ value.chv }}' }], 0, {{ container.id }}, null, false);">
+                               onclick="context_menu(this, [{'contains': ['silent push chv'], 'value': '{{ value.chv|escapejs|escapejs }}' }], 0, {{ container.id }}, null, false);">
                               {{ value.chv }}
                               <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a>
@@ -251,14 +251,14 @@ and limitations under the License.
                         <tr>
                           <td>
                             <a href="javascript:;"
-                               onclick="context_menu(this, [{'contains': ['asn'], 'value': '{{ value.asn }}' }], 0, {{ container.id }}, null, false);">
+                               onclick="context_menu(this, [{'contains': ['asn'], 'value': '{{ value.asn|escapejs|escapejs }}' }], 0, {{ container.id }}, null, false);">
                               {{ value.asn }}
                               <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a>
                           </td>
                           <td>
                             <a href="javascript:;"
-                               onclick="context_menu(this, [{'contains': ['asn name'], 'value': '{{ value.asname }}' }], 0, {{ container.id }}, null, false);">
+                               onclick="context_menu(this, [{'contains': ['asn name'], 'value': '{{ value.asname|escapejs|escapejs }}' }], 0, {{ container.id }}, null, false);">
                               {{ value.asname }}
                               <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a>
@@ -270,7 +270,7 @@ and limitations under the License.
                           {% if value.ip is not None %}
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ value.ip }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': ['ip'], 'value': '{{ value.ip|escapejs|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ value.ip }}
                                 <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
@@ -280,7 +280,7 @@ and limitations under the License.
                           {% if value.subnet_size is not None %}<td>{{ value.subnet_size }}</td>{% endif %}
                           <td>
                             <a href="javascript:;"
-                               onclick="context_menu(this, [{'contains': ['subnet'], 'value': '{{ value.subnet }}' }], 0, {{ container.id }}, null, false);">
+                               onclick="context_menu(this, [{'contains': ['subnet'], 'value': '{{ value.subnet|escapejs|escapejs }}' }], 0, {{ container.id }}, null, false);">
                               {{ value.subnet }}
                               <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                             </a>

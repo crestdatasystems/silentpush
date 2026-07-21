@@ -1,6 +1,6 @@
 # File: silentpush_connector.py
 #
-# Copyright (c) 2024-2025 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +28,32 @@ from actions import BaseAction
 from silentpush_utils import SilentpushUtils, Validator
 
 
+ACTION_MODULES = {
+    "test_connectivity": "actions.silentpush_test_connectivity",
+    "list_domain_information": "actions.silentpush_list_domain_information",
+    "get_domain_certificates": "actions.silentpush_get_domain_certificates",
+    "search_domains": "actions.silentpush_search_domains",
+    "list_domain_infratags": "actions.silentpush_list_domain_infratags",
+    "get_enrichment_data": "actions.silentpush_get_enrichment_data",
+    "list_ip_information": "actions.silentpush_list_ip_information",
+    "get_asn_reputation": "actions.silentpush_get_asn_reputation",
+    "get_asn_takedown_reputation": "actions.silentpush_get_asn_takedown_reputation",
+    "get_ipv4_reputation": "actions.silentpush_get_ipv4_reputation",
+    "get_job_status": "actions.silentpush_get_job_status",
+    "get_nameserver_reputation": "actions.silentpush_get_nameserver_reputation",
+    "get_subnet_reputation": "actions.silentpush_get_subnet_reputation",
+    "get_asns_seen_for_domain": "actions.silentpush_get_asns_seen_for_domain",
+    "forward_padns_lookup": "actions.silentpush_forward_padns_lookup",
+    "reverse_padns_lookup": "actions.silentpush_reverse_padns_lookup",
+    "density_lookup": "actions.silentpush_density_lookup",
+    "search_scan_data": "actions.silentpush_search_scan_data",
+    "live_url_scan": "actions.silentpush_live_url_scan",
+    "get_indicators_of_future_attack_feed": "actions.silentpush_get_indicators_of_future_attack_feed",
+    "live_url_screenshot": "actions.silentpush_live_url_screenshot",
+    "get_data_export": "actions.silentpush_get_data_export",
+}
+
+
 class RetVal(tuple):
     def __new__(cls, val1, val2=None):
         return tuple.__new__(RetVal, (val1, val2))
@@ -50,8 +76,12 @@ class SilentpushConnector(BaseConnector):
         action_id = self.get_action_identifier()
         self.debug_print("action_id", self.get_action_identifier())
 
-        action_name = f"actions.silentpush_{action_id}"
-        import_module(action_name, package="actions")
+        action_name = ACTION_MODULES.get(action_id)
+        if action_name is None:
+            self.debug_print("Action not implemented")
+            return phantom.APP_ERROR
+
+        import_module(action_name, package="actions")  # nosemgrep: action_name comes from the static ACTION_MODULES allowlist
 
         base_action_sub_classes = BaseAction.__subclasses__()
         self.debug_print(f"Finding action module: {action_name}")
@@ -74,6 +104,7 @@ class SilentpushConnector(BaseConnector):
         self.validator = Validator()
         # get the asset config
         self.config = self.get_config()
+        self._verify = self.config.get("verify_server_cert", True)
 
         return phantom.APP_SUCCESS
 

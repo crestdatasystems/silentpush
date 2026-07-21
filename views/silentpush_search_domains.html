@@ -12,7 +12,7 @@
 {% block widget_content %}
   <!-- Main Start Block -->
   <!--File: silentpush_search_domains.html
-Copyright (c) 2024-2025 Splunk Inc.
+Copyright (c) 2024-2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ and limitations under the License.
                 </td>
                 <td>
                   <a href="javascript:;"
-                     onclick="context_menu(this, [{'contains': ['silent push job id'], 'value': '{{ result.data.0.response.job_status.job_id }}' }], 0, {{ container.id }}, null, false);">
+                     onclick="context_menu(this, [{'contains': ['silent push job id'], 'value': '{{ result.data.0.response.job_status.job_id|escapejs }}' }], 0, {{ container.id }}, null, false);">
                     {{ result.data.0.response.job_status.job_id }}
                     <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                   </a>
@@ -159,7 +159,7 @@ and limitations under the License.
                   <tr>
                     <td class="cell-width">
                       <a href="javascript:;"
-                         onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ data.host }}' }], 0, {{ container.id }}, null, false);">
+                         onclick="context_menu(this, [{'contains': ['domain'], 'value': '{{ data.host|escapejs }}' }], 0, {{ container.id }}, null, false);">
                         {{ data.host }}
                         <span class="fa fa-caret-down" style="font-size: smaller;"></span>
                       </a>

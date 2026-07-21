@@ -12,7 +12,7 @@
 {% block widget_content %}
   <!-- Main Start Block -->
   <!--File: silentpush_list_ip_information_view.html
-Copyright (c) 2024-2025 Splunk Inc.
+Copyright (c) 2024-2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -137,42 +137,42 @@ and limitations under the License.
                           <tr>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'ip' ], 'value': '{{ ip.ip }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'ip' ], 'value': '{{ ip.ip|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.ip }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
                             </td>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'asn' ], 'value': '{{ ip.asn }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'asn' ], 'value': '{{ ip.asn|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.asn }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
                             </td>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'asname' ], 'value': '{{ ip.asname }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'asname' ], 'value': '{{ ip.asname|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.asname }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
                             </td>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'asn reputation' ], 'value': '{{ ip.asn_reputation }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'asn reputation' ], 'value': '{{ ip.asn_reputation|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.asn_reputation }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
                             </td>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'asn takedown reputation' ], 'value': '{{ ip.asn_takedown_reputation }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'asn takedown reputation' ], 'value': '{{ ip.asn_takedown_reputation|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.asn_takedown_reputation }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
                             </td>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'ip reputation' ], 'value': '{{ ip.ip_reputation }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'ip reputation' ], 'value': '{{ ip.ip_reputation|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.ip_reputation }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
@@ -180,21 +180,21 @@ and limitations under the License.
                             <td>{{ ip.density }}</td>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'sp risk score' ], 'value': '{{ ip.sp_risk_score }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'sp risk score' ], 'value': '{{ ip.sp_risk_score|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.sp_risk_score }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
                             </td>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'subnet' ], 'value': '{{ ip.subnet }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'subnet' ], 'value': '{{ ip.subnet|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.subnet }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
                             </td>
                             <td>
                               <a href="javascript:;"
-                                 onclick="context_menu(this, [{'contains': [ 'subnet reputation' ], 'value': '{{ ip.subnet_reputation }}' }], 0, {{ container.id }}, null, false);">
+                                 onclick="context_menu(this, [{'contains': [ 'subnet reputation' ], 'value': '{{ ip.subnet_reputation|escapejs }}' }], 0, {{ container.id }}, null, false);">
                                 {{ ip.subnet_reputation }}
                                 &nbsp;<span class="fa fa-caret-down" style="font-size: smaller;"></span>
                               </a>
