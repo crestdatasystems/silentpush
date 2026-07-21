@@ -1,3 +1,1 @@
 **Unreleased**
-
-* PAPP-38046: Secure TLS, export downloads, vaulted CSV data, and widget JavaScript contexts (Written by Codex)
