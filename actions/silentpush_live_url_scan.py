@@ -1,6 +1,6 @@
 # File: silentpush_live_url_scan.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -151,5 +151,5 @@ class LiveUrlScan(BaseAction):
         self._action_result.add_data(response)
 
         return self._action_result.set_status(
-            phantom.APP_SUCCESS,
-            consts.ACTION_LIVE_URL_SCAN_SUCCESS_RESPONSE)
+            phantom.APP_SUCCESS, consts.ACTION_LIVE_URL_SCAN_SUCCESS_RESPONSE
+        )

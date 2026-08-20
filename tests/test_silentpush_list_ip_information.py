@@ -1,6 +1,6 @@
 # File: test_silentpush_list_ip_information.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -142,7 +142,10 @@ class SilentpushAction(unittest.TestCase):
         Patch the post() to run job.
         """
         self.test_json["parameters"] = [
-            {"ips": "2001:db8:3333:4444:5555:6666:7777:8888, 2001:db8:3333:4444:CCCC:DDDD:EEEE:FFFF"}]
+            {
+                "ips": "2001:db8:3333:4444:5555:6666:7777:8888, 2001:db8:3333:4444:CCCC:DDDD:EEEE:FFFF"
+            }
+        ]
 
         mock_post.return_value.status_code = 400
         mock_post.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
@@ -150,7 +153,12 @@ class SilentpushAction(unittest.TestCase):
             silentpush_responses.LIST_IP_INFORMATION_VALID_RESP
         )
 
-        req_data = {"ips": ["2001:db8:3333:4444:5555:6666:7777:8888", "2001:db8:3333:4444:CCCC:DDDD:EEEE:FFFF"]}
+        req_data = {
+            "ips": [
+                "2001:db8:3333:4444:5555:6666:7777:8888",
+                "2001:db8:3333:4444:CCCC:DDDD:EEEE:FFFF",
+            ]
+        }
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)

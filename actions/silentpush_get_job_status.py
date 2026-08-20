@@ -1,6 +1,6 @@
 # File: silentpush_get_job_status.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,7 +35,9 @@ class GetJobStatus(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format('get_job_status'))
+        self._connector.save_progress(
+            consts.EXECUTION_START_MESSAGE.format("get_job_status")
+        )
 
         ret_val = self.__validate_params()
         if phantom.is_fail(ret_val):
@@ -45,44 +47,41 @@ class GetJobStatus(BaseAction):
         endpoint, method = self.__get_request_url_and_method()
 
         ret_val, response = self.__make_rest_call(
-            url=endpoint,
-            method=method,
-            param=query_params)
+            url=endpoint, method=method, param=query_params
+        )
 
         return self.__handle_response(ret_val, response)
 
     def __validate_params(self):
         """Validate parameters"""
-        if 'max_wait' in self._param:
+        if "max_wait" in self._param:
             ret_val, value = self._connector.validator.validate_integer(
-                self._action_result,
-                self._param.get('max_wait'),
-                'max_wait')
+                self._action_result, self._param.get("max_wait"), "max_wait"
+            )
 
             if not ret_val:
                 return ret_val
 
-            self._param['max_wait'] = value
+            self._param["max_wait"] = value
 
-        if 'result_type' in self._param:
+        if "result_type" in self._param:
             ret_val, value = self._connector.validator.validate_dropdown(
                 self._action_result,
-                self._param.get('result_type'),
-                'result_type',
-                consts.GET_JOB_STATUS_RESULT_TYPE_OPTIONS)
+                self._param.get("result_type"),
+                "result_type",
+                consts.GET_JOB_STATUS_RESULT_TYPE_OPTIONS,
+            )
 
             if not ret_val:
                 return ret_val
 
-            self._param['result_type'] = value
+            self._param["result_type"] = value
 
         return True
 
     def __get_query_params(self):
         """Get request query parameters"""
-        query_params = {
-            "max_wait": "max_wait"
-        }
+        query_params = {"max_wait": "max_wait"}
 
         payload = {}
         if "result_type" in self._param:
@@ -100,10 +99,11 @@ class GetJobStatus(BaseAction):
 
         endpoint = consts.GET_JOB_STATUS_ENDPOINT
         for parameter in parameters:
-            endpoint = endpoint.replace("{{##}}".replace("##", parameter),
-                                        str(self._param.get(parameter)))
+            endpoint = endpoint.replace(
+                "{{##}}".replace("##", parameter), str(self._param.get(parameter))
+            )
 
-        return endpoint, 'get'
+        return endpoint, "get"
 
     def __make_rest_call(self, url, method, headers=None, param=None, body=None):
         """Invoke API"""
@@ -111,11 +111,11 @@ class GetJobStatus(BaseAction):
             "endpoint": url,
             "action_result": self._action_result,
             "method": method.lower(),
-            "headers": headers or {}
+            "headers": headers or {},
         }
 
         if param:
-            args['endpoint'] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
 
         return self._connector.util.make_rest_call(**args)
 

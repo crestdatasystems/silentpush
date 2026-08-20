@@ -1,6 +1,6 @@
 # File: silentpush_get_asns_seen_for_domain.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,23 +35,22 @@ class GetAsnsSeenForDomain(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format('get_asns_seen_for_domain'))
+        self._connector.save_progress(
+            consts.EXECUTION_START_MESSAGE.format("get_asns_seen_for_domain")
+        )
 
         query_params = self.__get_query_params()
         endpoint, method = self.__get_request_url_and_method()
 
         ret_val, response = self.__make_rest_call(
-            url=endpoint,
-            method=method,
-            param=query_params)
+            url=endpoint, method=method, param=query_params
+        )
 
         return self.__handle_response(ret_val, response)
 
     def __get_query_params(self):
         """Get request query parameters"""
-        payload = {
-            "result_format": "full"
-        }
+        payload = {"result_format": "full"}
 
         return payload
 
@@ -61,10 +60,11 @@ class GetAsnsSeenForDomain(BaseAction):
 
         endpoint = consts.GET_ASNS_SEEN_FOR_DOMAIN_ENDPOINT
         for parameter in parameters:
-            endpoint = endpoint.replace("{{##}}".replace("##", parameter),
-                                        str(self._param.get(parameter)))
+            endpoint = endpoint.replace(
+                "{{##}}".replace("##", parameter), str(self._param.get(parameter))
+            )
 
-        return endpoint, 'get'
+        return endpoint, "get"
 
     def __make_rest_call(self, url, method, headers=None, param=None, body=None):
         """Invoke API"""
@@ -72,11 +72,11 @@ class GetAsnsSeenForDomain(BaseAction):
             "endpoint": url,
             "action_result": self._action_result,
             "method": method.lower(),
-            "headers": headers or {}
+            "headers": headers or {},
         }
 
         if param:
-            args['endpoint'] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
 
         args["error_path"] = "response.error"
         return self._connector.util.make_rest_call(**args)
@@ -89,5 +89,5 @@ class GetAsnsSeenForDomain(BaseAction):
         self._action_result.add_data(response)
 
         return self._action_result.set_status(
-            phantom.APP_SUCCESS,
-            consts.ACTION_GET_ASNS_SEEN_FOR_DOMAIN_SUCCESS_RESPONSE)
+            phantom.APP_SUCCESS, consts.ACTION_GET_ASNS_SEEN_FOR_DOMAIN_SUCCESS_RESPONSE
+        )

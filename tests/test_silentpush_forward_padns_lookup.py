@@ -1,6 +1,6 @@
 # File: test_silentpush_forward_padns_lookup.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,11 +34,16 @@ class SilentpushAction(unittest.TestCase):
     def setUp(self):
         self.connector = SilentpushConnector()
         self.test_json = dict(silentpush_constant.TEST_JSON)
-        self.test_json['config'] = {**self.test_json['config'], **silentpush_constant.APIKEY_AUTH_CONFIG}
-        self.test_json.update({"action": "forward padns lookup", "identifier": "forward_padns_lookup"})
+        self.test_json["config"] = {
+            **self.test_json["config"],
+            **silentpush_constant.APIKEY_AUTH_CONFIG,
+        }
+        self.test_json.update(
+            {"action": "forward padns lookup", "identifier": "forward_padns_lookup"}
+        )
         self.run_job_endpoint = consts.FORWARD_PADNS_LOOKUP_ENDPOINT.replace(
-            "{{qtype}}", "a").replace(
-            "{{qname}}", "8.8.8.8")
+            "{{qtype}}", "a"
+        ).replace("{{qname}}", "8.8.8.8")
 
         return super().setUp()
 
@@ -66,19 +71,21 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": 100
+                "limit": 100,
             }
         ]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = silentpush_responses.FORWARD_PADNS_LOOKUP_VALID_RESP
+        mock_get.return_value.json.return_value = (
+            silentpush_responses.FORWARD_PADNS_LOOKUP_VALID_RESP
+        )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 1)
-        self.assertEqual(ret_val['status'], 'success')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 1)
+        self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
             f"{self.test_json['config']['base_url']}"
@@ -90,7 +97,7 @@ class SilentpushAction(unittest.TestCase):
             "&prefer=result&with_metadata=1&max_wait=20&skip=20&limit=100",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
-            headers={'X-API-KEY': silentpush_constant.DUMMY_API_TOKEN}
+            headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
         )
 
     def test_forward_padns_lookup_invalid(self, mock_get):
@@ -116,19 +123,21 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": 100
+                "limit": 100,
             }
         ]
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = silentpush_constant.MISSING_REQUIRED_PARAMETER
+        mock_get.return_value.json.return_value = (
+            silentpush_constant.MISSING_REQUIRED_PARAMETER
+        )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
             f"{self.test_json['config']['base_url']}"
@@ -140,7 +149,7 @@ class SilentpushAction(unittest.TestCase):
             "&skip=20&limit=100",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
-            headers={'X-API-KEY': silentpush_constant.DUMMY_API_TOKEN}
+            headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
         )
 
     def test_forward_padns_lookup_netmask_type_invalid(self, mock_get):
@@ -167,15 +176,15 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": 100
+                "limit": 100,
             }
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     def test_forward_padns_lookup_match_value_invalid(self, mock_get):
         """Test the invalid case for the forward padns lookup action.
@@ -200,15 +209,15 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": 100
+                "limit": 100,
             }
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     def test_forward_padns_lookup_output_format_value_invalid(self, mock_get):
         """Test the invalid case for the forward padns lookup action.
@@ -233,15 +242,15 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": 100
+                "limit": 100,
             }
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     def test_forward_padns_lookup_prefer_value_invalid(self, mock_get):
         """Test the invalid case for the forward padns lookup action.
@@ -266,15 +275,15 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": 100
+                "limit": 100,
             }
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     def test_forward_padns_lookup_max_wait_type_invalid(self, mock_get):
         """Test the invalid type case for the forward padns lookup action.
@@ -300,15 +309,15 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": -10,
                 "skip": 20,
-                "limit": 100
+                "limit": 100,
             }
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     def test_forward_padns_lookup_skip_type_invalid(self, mock_get):
         """Test the invalid type case for the forward padns lookup action.
@@ -333,15 +342,15 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": -10,
-                "limit": 100
+                "limit": 100,
             }
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     def test_forward_padns_lookup_limit_type_invalid(self, mock_get):
         """Test the invalid type case for the forward padns lookup action.
@@ -366,15 +375,15 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": -10
+                "limit": -10,
             }
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     def test_forward_padns_lookup_qtype_value_invalid(self, mock_get):
         """Test the invalid type case for the forward padns lookup action.
@@ -399,15 +408,15 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": -10
+                "limit": -10,
             }
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     def test_forward_padns_sort_empty_valid(self, mock_get):
         """Test the invalid type case for the forward padns lookup action.
@@ -432,19 +441,21 @@ class SilentpushAction(unittest.TestCase):
                 "with_metadata": True,
                 "max_wait": 20,
                 "skip": 20,
-                "limit": 10
+                "limit": 10,
             }
         ]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = silentpush_responses.FORWARD_PADNS_LOOKUP_VALID_RESP
+        mock_get.return_value.json.return_value = (
+            silentpush_responses.FORWARD_PADNS_LOOKUP_VALID_RESP
+        )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 1)
-        self.assertEqual(ret_val['status'], 'success')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 1)
+        self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
             f"{self.test_json['config']['base_url']}"
@@ -455,5 +466,5 @@ class SilentpushAction(unittest.TestCase):
             "&prefer=result&with_metadata=1&max_wait=20&skip=20&limit=10",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
-            headers={'X-API-KEY': silentpush_constant.DUMMY_API_TOKEN}
+            headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
         )

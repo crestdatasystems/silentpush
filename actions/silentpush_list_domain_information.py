@@ -1,6 +1,6 @@
 # File: silentpush_list_domain_information.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -108,8 +108,11 @@ class ListDomainInformation(BaseAction):
             self._param["fetch_whois_info"] = value
 
         if "domains" in self._param:
-            domain_list = [clean_domain for domain in self._param['domains'].split(',') if (
-                clean_domain := domain.strip())]
+            domain_list = [
+                clean_domain
+                for domain in self._param["domains"].split(",")
+                if (clean_domain := domain.strip())
+            ]
             if not domain_list:
                 return self._action_result.set_status(
                     phantom.APP_ERROR,
@@ -168,14 +171,17 @@ class ListDomainInformation(BaseAction):
     def __handle_response(self, ret_val, response):
         """Process response received from the third party API."""
         if response.get("domain_information"):
-            response["domain_information"] = response["domain_information"].get("response", {}).get("domaininfo", {})
+            response["domain_information"] = (
+                response["domain_information"].get("response", {}).get("domaininfo", {})
+            )
 
         if response.get("risk_score"):
             response["risk_score"] = response["risk_score"].get("response", {})
 
         if response.get("live_whois_information"):
             response["live_whois_information"] = [
-                result.get("response", {}).get("whois_live", {}) for result in response["live_whois_information"]
+                result.get("response", {}).get("whois_live", {})
+                for result in response["live_whois_information"]
             ]
 
         self._action_result.add_data(response)
@@ -184,6 +190,5 @@ class ListDomainInformation(BaseAction):
             return self._action_result.get_status()
 
         return self._action_result.set_status(
-            phantom.APP_SUCCESS,
-            consts.ACTION_LIST_DOMAIN_INFO_SUCCESS_RESPONSE
+            phantom.APP_SUCCESS, consts.ACTION_LIST_DOMAIN_INFO_SUCCESS_RESPONSE
         )

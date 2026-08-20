@@ -1,6 +1,6 @@
 # File: silentpush_get_ipv4_reputation.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,7 +35,9 @@ class GetIpv4Reputation(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format('get_ipv4_reputation'))
+        self._connector.save_progress(
+            consts.EXECUTION_START_MESSAGE.format("get_ipv4_reputation")
+        )
 
         ret_val = self.__validate_params()
         if phantom.is_fail(ret_val):
@@ -45,44 +47,38 @@ class GetIpv4Reputation(BaseAction):
         endpoint, method = self.__get_request_url_and_method()
 
         ret_val, response = self.__make_rest_call(
-            url=endpoint,
-            method=method,
-            param=query_params)
+            url=endpoint, method=method, param=query_params
+        )
 
         return self.__handle_response(ret_val, response)
 
     def __validate_params(self):
         """Validate parameters."""
-        if 'limit' in self._param:
+        if "limit" in self._param:
             ret_val, value = self._connector.validator.validate_integer(
-                self._action_result,
-                self._param.get('limit'),
-                'limit')
+                self._action_result, self._param.get("limit"), "limit"
+            )
 
             if not ret_val:
                 return ret_val
 
-            self._param['limit'] = value
+            self._param["limit"] = value
 
-        if 'explain' in self._param:
+        if "explain" in self._param:
             ret_val, value = self._connector.validator.validate_boolean(
-                self._action_result,
-                self._param.get('explain'),
-                'explain')
+                self._action_result, self._param.get("explain"), "explain"
+            )
 
             if not ret_val:
                 return ret_val
 
-            self._param['explain'] = int(value)
+            self._param["explain"] = int(value)
 
         return True
 
     def __get_query_params(self):
         """Get request query parameters."""
-        query_params = {
-            "limit": "limit",
-            "explain": "explain"
-        }
+        query_params = {"limit": "limit", "explain": "explain"}
 
         payload = {}
         for key, value in query_params.items():
@@ -97,10 +93,11 @@ class GetIpv4Reputation(BaseAction):
 
         endpoint = consts.GET_IPV4_REPUTATION_ENDPOINT
         for parameter in parameters:
-            endpoint = endpoint.replace("{{##}}".replace("##", parameter),
-                                        str(self._param.get(parameter)))
+            endpoint = endpoint.replace(
+                "{{##}}".replace("##", parameter), str(self._param.get(parameter))
+            )
 
-        return endpoint, 'get'
+        return endpoint, "get"
 
     def __make_rest_call(self, url, method, headers=None, param=None, body=None):
         """Invoke API."""
@@ -108,11 +105,11 @@ class GetIpv4Reputation(BaseAction):
             "endpoint": url,
             "action_result": self._action_result,
             "method": method.lower(),
-            "headers": headers or {}
+            "headers": headers or {},
         }
 
         if param:
-            args['endpoint'] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
 
         args["error_path"] = "response.ip_reputation_history.error"
         return self._connector.util.make_rest_call(**args)
@@ -125,11 +122,12 @@ class GetIpv4Reputation(BaseAction):
         self._action_result.add_data(response)
 
         summary = {
-            "total_ip_reputations": len(response.get("response", {}).get("ip_reputation_history", []))
+            "total_ip_reputations": len(
+                response.get("response", {}).get("ip_reputation_history", [])
+            )
         }
         self._action_result.update_summary(summary)
 
         return self._action_result.set_status(
-            phantom.APP_SUCCESS,
-            consts.ACTION_IPV4_REPUTATION_SUCCESS_RESPONSE
+            phantom.APP_SUCCESS, consts.ACTION_IPV4_REPUTATION_SUCCESS_RESPONSE
         )

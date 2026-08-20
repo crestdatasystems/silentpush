@@ -1,6 +1,6 @@
 # File: silentpush_forward_padns_lookup.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -150,8 +150,11 @@ class ForwardPadnsLookup(BaseAction):
             self._param["limit"] = value
 
         if "sort" in self._param:
-            sort_list = [clean_sort for sort in self._param.get('sort', "").split(',') if (
-                clean_sort := sort.strip())]
+            sort_list = [
+                clean_sort
+                for sort in self._param.get("sort", "").split(",")
+                if (clean_sort := sort.strip())
+            ]
 
             if len(sort_list):
                 self._param["sort"] = "&sort=".join(sort_list)
@@ -233,6 +236,5 @@ class ForwardPadnsLookup(BaseAction):
         self._action_result.add_data(response)
 
         return self._action_result.set_status(
-            phantom.APP_SUCCESS,
-            consts.ACTION_FORWARD_LOOKUP_SUCCESS_RESPONSE
+            phantom.APP_SUCCESS, consts.ACTION_FORWARD_LOOKUP_SUCCESS_RESPONSE
         )

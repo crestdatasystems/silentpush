@@ -1,6 +1,6 @@
 # File: silentpush_list_domain_infratags.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,7 +35,9 @@ class ListDomainInfratags(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format('list_domain_infratags'))
+        self._connector.save_progress(
+            consts.EXECUTION_START_MESSAGE.format("list_domain_infratags")
+        )
 
         ret_val = self.__validate_params()
         if phantom.is_fail(ret_val):
@@ -46,59 +48,61 @@ class ListDomainInfratags(BaseAction):
         endpoint, method = self.__get_request_url_and_method()
 
         ret_val, response = self.__make_rest_call(
-            url=endpoint,
-            method=method,
-            param=query_params,
-            body=request_body)
+            url=endpoint, method=method, param=query_params, body=request_body
+        )
 
         return self.__handle_response(ret_val, response)
 
     def __validate_params(self):
         """Validate parameters."""
-        domains = [final_domain for domain in self._param['domains'].split(',') if (
-            final_domain := domain.strip())]
+        domains = [
+            final_domain
+            for domain in self._param["domains"].split(",")
+            if (final_domain := domain.strip())
+        ]
 
         if not domains:
             return self._action_result.set_status(
                 phantom.APP_ERROR, "Please provide a valid list of domains"
             )
 
-        self._param['domains'] = domains
+        self._param["domains"] = domains
 
-        if 'mode' in self._param:
+        if "mode" in self._param:
             ret_val, value = self._connector.validator.validate_dropdown(
                 self._action_result,
-                self._param.get('mode'),
-                'mode',
-                consts.LIST_DOMAIN_INFRATAGS_MODE_OPTIONS)
+                self._param.get("mode"),
+                "mode",
+                consts.LIST_DOMAIN_INFRATAGS_MODE_OPTIONS,
+            )
 
             if not ret_val:
                 return ret_val
 
-            self._param['mode'] = value
+            self._param["mode"] = value
 
-        if 'match' in self._param:
+        if "match" in self._param:
             ret_val, value = self._connector.validator.validate_dropdown(
                 self._action_result,
-                self._param.get('match'),
-                'match',
-                consts.LIST_DOMAIN_INFRATAGS_MATCH_OPTIONS)
+                self._param.get("match"),
+                "match",
+                consts.LIST_DOMAIN_INFRATAGS_MATCH_OPTIONS,
+            )
 
             if not ret_val:
                 return ret_val
 
-            self._param['match'] = value
+            self._param["match"] = value
 
-        if 'clusters' in self._param:
+        if "clusters" in self._param:
             ret_val, value = self._connector.validator.validate_boolean(
-                self._action_result,
-                self._param.get('clusters'),
-                'clusters')
+                self._action_result, self._param.get("clusters"), "clusters"
+            )
 
             if not ret_val:
                 return ret_val
 
-            self._param['clusters'] = int(value)
+            self._param["clusters"] = int(value)
 
         return True
 
@@ -108,7 +112,7 @@ class ListDomainInfratags(BaseAction):
             "mode": "mode",
             "match": "match",
             "as_of": "as_of",
-            "clusters": "clusters"
+            "clusters": "clusters",
         }
 
         payload = {}
@@ -120,22 +124,20 @@ class ListDomainInfratags(BaseAction):
 
     def __get_request_body(self):
         """Get request body."""
-        body = {
-            "domains": "{{domains}}"
-        }
+        body = {"domains": "{{domains}}"}
         allow_none = []
         allow_empty = {}
         default_values = {}
 
-        return self._connector.util.generate_json_body(body, allow_none,
-                                                       allow_empty, self._param,
-                                                       default_values)
+        return self._connector.util.generate_json_body(
+            body, allow_none, allow_empty, self._param, default_values
+        )
 
     def __get_request_url_and_method(self):
         """Get request endpoint and method."""
         endpoint = consts.LIST_DOMAIN_INFRATAGS_ENDPOINT
 
-        return endpoint, 'post'
+        return endpoint, "post"
 
     def __make_rest_call(self, url, method, headers=None, param=None, body=None):
         """Invoke API."""
@@ -143,14 +145,14 @@ class ListDomainInfratags(BaseAction):
             "endpoint": url,
             "action_result": self._action_result,
             "method": method.lower(),
-            "headers": headers or {}
+            "headers": headers or {},
         }
 
         if param:
-            args['endpoint'] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
 
         if body:
-            args['json'] = body
+            args["json"] = body
 
         return self._connector.util.make_rest_call(**args)
 
@@ -167,6 +169,5 @@ class ListDomainInfratags(BaseAction):
         self._action_result.update_summary(summary)
 
         return self._action_result.set_status(
-            phantom.APP_SUCCESS,
-            consts.ACTION_DOMAIN_INFRATAGS_SUCCESS_RESPONSE
+            phantom.APP_SUCCESS, consts.ACTION_DOMAIN_INFRATAGS_SUCCESS_RESPONSE
         )

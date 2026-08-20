@@ -1,6 +1,6 @@
 # File: silentpush_constant.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,15 +36,13 @@ TEST_JSON = {
         "main_module": "silentpush_connector.py",
         "base_url": "https://api.silentpush.com",
         "verify_server_cert": False,
-        "api_key": cipher_text
+        "api_key": cipher_text,
     },
     "debug_level": 3,
     "dec_key": DEFAULT_ASSET_ID,
-    "parameters": [{}]
+    "parameters": [{}],
 }
-APIKEY_AUTH_CONFIG = {
-    "X-API-KEY": cipher_text
-}
+APIKEY_AUTH_CONFIG = {"X-API-KEY": cipher_text}
 
 DUMMY_API_TOKEN = "<dummy_api_token>"  # NOSONAR
 

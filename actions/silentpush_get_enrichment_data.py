@@ -1,6 +1,6 @@
 # File: silentpush_get_enrichment_data.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -124,7 +124,8 @@ class GetEnrichmentData(BaseAction):
         self._action_result.add_data(response)
 
         summary = {
-            "total_enrichment_data": len(response.get("response", {}).get("ip2asn", [])) or 1
+            "total_enrichment_data": len(response.get("response", {}).get("ip2asn", []))
+            or 1
         }
         self._action_result.update_summary(summary)
 

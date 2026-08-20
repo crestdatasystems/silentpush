@@ -1,6 +1,6 @@
 # File: test_silentpush_density_lookup.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -51,7 +51,9 @@ class SilentpushAction(unittest.TestCase):
         self.test_json["parameters"] = [
             {"qtype": "NSSRV", "query": "1.1.1.1", "scope": "IP"}
         ]
-        self.run_job_endpoint = self.run_job_endpoint.replace("{{qtype}}", "nssrv").replace("{{query}}", "1.1.1.1")
+        self.run_job_endpoint = self.run_job_endpoint.replace(
+            "{{qtype}}", "nssrv"
+        ).replace("{{query}}", "1.1.1.1")
         scope = "ip"
 
         mock_get.return_value.status_code = 200
@@ -81,7 +83,9 @@ class SilentpushAction(unittest.TestCase):
         self.test_json["parameters"] = [
             {"qtype": "NSSRV", "query": "1.1.1.1", "scope": "IP"}
         ]
-        self.run_job_endpoint = self.run_job_endpoint.replace("{{qtype}}", "nssrv").replace("{{query}}", "1.1.1.1")
+        self.run_job_endpoint = self.run_job_endpoint.replace(
+            "{{qtype}}", "nssrv"
+        ).replace("{{query}}", "1.1.1.1")
         scope = "ip"
 
         mock_get.return_value.status_code = 400

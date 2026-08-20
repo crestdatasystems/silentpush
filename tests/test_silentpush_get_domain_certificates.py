@@ -1,6 +1,6 @@
 # File: test_silentpush_get_domain_certificates.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -83,8 +83,8 @@ class SilentpushAction(unittest.TestCase):
 
         mock_get.assert_called_with(
             f'{self.test_json["config"]["base_url"]}'
-            f'{self.run_job_endpoint}?domain_regex=silentpush&cert_issuer=GTS+CA+1P5&date_min=2021-01-01&date_max'
-            f'=2024-01-01&prefer=result&max_wait=25&with_metadata=1&limit=4&skip=1',
+            f"{self.run_job_endpoint}?domain_regex=silentpush&cert_issuer=GTS+CA+1P5&date_min=2021-01-01&date_max"
+            f"=2024-01-01&prefer=result&max_wait=25&with_metadata=1&limit=4&skip=1",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},

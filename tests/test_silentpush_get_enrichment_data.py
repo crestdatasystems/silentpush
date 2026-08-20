@@ -1,6 +1,6 @@
 # File: test_silentpush_get_enrichment_data.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -38,10 +38,7 @@ class SilentpushAction(unittest.TestCase):
             **silentpush_constant.APIKEY_AUTH_CONFIG,
         }
         self.test_json.update(
-            {
-                "action": "get enrichment data",
-                "identifier": "get_enrichment_data"
-            }
+            {"action": "get enrichment data", "identifier": "get_enrichment_data"}
         )
         self.run_job_endpoint = consts.GET_ENRICHMENT_DATA_ENDPOINT
 

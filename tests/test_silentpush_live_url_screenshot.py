@@ -1,6 +1,6 @@
 # File: test_silentpush_live_url_screenshot.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,8 +29,13 @@ class SilentpushAction(unittest.TestCase):
     def setUp(self):
         self.connector = SilentpushConnector()
         self.test_json = dict(silentpush_constant.TEST_JSON)
-        self.test_json['config'] = {**self.test_json['config'], **silentpush_constant.APIKEY_AUTH_CONFIG}
-        self.test_json.update({"action": "live url screenshot", "identifier": "live_url_screenshot"})
+        self.test_json["config"] = {
+            **self.test_json["config"],
+            **silentpush_constant.APIKEY_AUTH_CONFIG,
+        }
+        self.test_json.update(
+            {"action": "live url screenshot", "identifier": "live_url_screenshot"}
+        )
         self.run_job_endpoint = consts.LIVE_URL_SCREENSHOT_ENDPOINT
 
         return super().setUp()
@@ -41,51 +46,57 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "url": "http://www.silentpush.com"
-            }
-        ]
+        self.test_json["parameters"] = [{"url": "http://www.silentpush.com"}]
 
         # Define the side_effect function
         def mock_get_response(*args, **kwargs):
             url = args[0] if args else kwargs.get("url", "")
-            if 'https://api.silentpush.com' in url:
+            if "https://api.silentpush.com" in url:
                 return MockResponse(
                     status_code=200,
                     headers=silentpush_constant.DEFAULT_JSON_HEADERS,
-                    text=silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+                    text=silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP,
                 )
             else:
                 return MockResponse(
                     status_code=200,
                     headers=silentpush_constant.DEFAULT_IMAGE_HEADERS,
-                    content=silentpush_responses.IMAGE_RESPONSE
+                    content=silentpush_responses.IMAGE_RESPONSE,
                 )
 
         mock_get.side_effect = mock_get_response
 
-        with patch('phantom.rules.vault_add') as mock_vault_add, patch('phantom.rules.vault_info') as mock_vault_info:
+        with patch("phantom.rules.vault_add") as mock_vault_add, patch(
+            "phantom.rules.vault_info"
+        ) as mock_vault_info:
             # Mock the return values of ph_rules.vault_add() and ph_rules.vault_info()
-            mock_vault_add.return_value = (True, "Success", "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb")  # pragma: allowlist secret
-            mock_vault_info.return_value = (True, "meta_info", silentpush_responses.VAULT_META_INFO)
+            mock_vault_add.return_value = (
+                True,
+                "Success",
+                "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb",
+            )  # pragma: allowlist secret
+            mock_vault_info.return_value = (
+                True,
+                "meta_info",
+                silentpush_responses.VAULT_META_INFO,
+            )
 
             ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
             ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 1)
-        self.assertEqual(ret_val['status'], 'success')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 1)
+        self.assertEqual(ret_val["status"], "success")
 
         expected_calls = [
             call(
                 f'{self.test_json["config"]["base_url"]}{self.run_job_endpoint}?url=http%3A%2F%2Fwww.silentpush.com',
                 timeout=consts.REQUEST_DEFAULT_TIMEOUT,
                 verify=False,
-                headers={'X-API-KEY': '<dummy_api_token>'}
+                headers={"X-API-KEY": "<dummy_api_token>"},
             ),
             call(
-                'https://fs.silentpush.com/screenshots/silentpush.com/82ec8d7fc8af8d322959dead594c7f8e.jpg',
-                timeout=consts.REQUEST_DEFAULT_TIMEOUT
+                "https://fs.silentpush.com/screenshots/silentpush.com/82ec8d7fc8af8d322959dead594c7f8e.jpg",
+                timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             ),
         ]
 
@@ -97,21 +108,19 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "url": "http://www.silentpush.com"
-            }
-        ]
+        self.test_json["parameters"] = [{"url": "http://www.silentpush.com"}]
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+        mock_get.return_value.json.return_value = (
+            silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+        )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     @patch("silentpush_utils.requests.get")
     def test_live_url_screenshot_invalid_image_response(self, mock_get):
@@ -119,51 +128,57 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "url": "http://www.silentpush.com"
-            }
-        ]
+        self.test_json["parameters"] = [{"url": "http://www.silentpush.com"}]
 
         # Define the side_effect function
         def mock_get_response(*args, **kwargs):
             url = args[0] if args else kwargs.get("url", "")
-            if 'https://api.silentpush.com' in url:
+            if "https://api.silentpush.com" in url:
                 return MockResponse(
                     status_code=200,
                     headers=silentpush_constant.DEFAULT_JSON_HEADERS,
-                    text=silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+                    text=silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP,
                 )
             else:
                 return MockResponse(
                     status_code=400,
                     headers=silentpush_constant.DEFAULT_IMAGE_HEADERS,
-                    content=silentpush_responses.IMAGE_RESPONSE
+                    content=silentpush_responses.IMAGE_RESPONSE,
                 )
 
         mock_get.side_effect = mock_get_response
 
-        with patch('phantom.rules.vault_add') as mock_vault_add, patch('phantom.rules.vault_info') as mock_vault_info:
+        with patch("phantom.rules.vault_add") as mock_vault_add, patch(
+            "phantom.rules.vault_info"
+        ) as mock_vault_info:
             # Mock the return values of ph_rules.vault_add() and ph_rules.vault_info()
-            mock_vault_add.return_value = (True, "Success", "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb")  # pragma: allowlist secret
-            mock_vault_info.return_value = (True, "meta_info", silentpush_responses.VAULT_META_INFO)
+            mock_vault_add.return_value = (
+                True,
+                "Success",
+                "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb",
+            )  # pragma: allowlist secret
+            mock_vault_info.return_value = (
+                True,
+                "meta_info",
+                silentpush_responses.VAULT_META_INFO,
+            )
 
             ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
             ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 2)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 2)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
         expected_calls = [
             call(
                 f'{self.test_json["config"]["base_url"]}{self.run_job_endpoint}?url=http%3A%2F%2Fwww.silentpush.com',
                 timeout=consts.REQUEST_DEFAULT_TIMEOUT,
                 verify=False,
-                headers={'X-API-KEY': '<dummy_api_token>'}
+                headers={"X-API-KEY": "<dummy_api_token>"},
             ),
             call(
-                'https://fs.silentpush.com/screenshots/silentpush.com/82ec8d7fc8af8d322959dead594c7f8e.jpg',
-                timeout=consts.REQUEST_DEFAULT_TIMEOUT
+                "https://fs.silentpush.com/screenshots/silentpush.com/82ec8d7fc8af8d322959dead594c7f8e.jpg",
+                timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             ),
         ]
 
@@ -175,26 +190,28 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "url": "http://www.silentpush.com"
-            }
-        ]
+        self.test_json["parameters"] = [{"url": "http://www.silentpush.com"}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+        mock_get.return_value.json.return_value = (
+            silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+        )
         mock_get.return_value.content = silentpush_responses.IMAGE_RESPONSE
 
-        with patch('phantom.rules.vault_add') as mock_vault_add:
+        with patch("phantom.rules.vault_add") as mock_vault_add:
             # Mock the return values of ph_rules.vault_add() and ph_rules.vault_info()
-            mock_vault_add.return_value = (False, "Success", "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb")  # pragma: allowlist secret
+            mock_vault_add.return_value = (
+                False,
+                "Success",
+                "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb",
+            )  # pragma: allowlist secret
 
             ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
             ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     @patch("silentpush_utils.requests.get")
     def test_live_url_screenshot_error_in_vault_info(self, mock_get):
@@ -202,27 +219,31 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "url": "http://www.silentpush.com"
-            }
-        ]
+        self.test_json["parameters"] = [{"url": "http://www.silentpush.com"}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+        mock_get.return_value.json.return_value = (
+            silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+        )
         mock_get.return_value.content = silentpush_responses.IMAGE_RESPONSE
 
-        with patch('phantom.rules.vault_add') as mock_vault_add, patch('phantom.rules.vault_info') as mock_vault_info:
+        with patch("phantom.rules.vault_add") as mock_vault_add, patch(
+            "phantom.rules.vault_info"
+        ) as mock_vault_info:
             # Mock the return values of ph_rules.vault_add() and ph_rules.vault_info()
-            mock_vault_add.return_value = (True, "Success", "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb")  # pragma: allowlist secret
+            mock_vault_add.return_value = (
+                True,
+                "Success",
+                "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb",
+            )  # pragma: allowlist secret
             mock_vault_info.return_value = (True, "meta_info", "")
 
             ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
             ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     @patch("silentpush_utils.requests.get")
     def test_live_url_screenshot_error_in_vault(self, mock_get):
@@ -230,21 +251,19 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "url": "http://www.silentpush.com"
-            }
-        ]
+        self.test_json["parameters"] = [{"url": "http://www.silentpush.com"}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+        mock_get.return_value.json.return_value = (
+            silentpush_responses.LIVE_URL_SCREENSHOT_VALID_RESP
+        )
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     @patch("silentpush_utils.requests.get")
     def test_live_url_screenshot_invalid_response_url(self, mock_get):
@@ -252,21 +271,19 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "url": "http://www.silentpush.com"
-            }
-        ]
+        self.test_json["parameters"] = [{"url": "http://www.silentpush.com"}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = {"response": {"screenshot": {"message": "error message"}}}
+        mock_get.return_value.json.return_value = {
+            "response": {"screenshot": {"message": "error message"}}
+        }
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
     @patch("silentpush_utils.requests.get")
     def test_live_url_screenshot_invalid_response(self, mock_get):
@@ -274,21 +291,19 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "url": "http://www.silentpush.com"
-            }
-        ]
+        self.test_json["parameters"] = [{"url": "http://www.silentpush.com"}]
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = {"response": {"screenshot": {"response": 400}}}
+        mock_get.return_value.json.return_value = {
+            "response": {"screenshot": {"response": 400}}
+        }
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
-        self.assertEqual(ret_val['result_summary']['total_objects'], 1)
-        self.assertEqual(ret_val['result_summary']['total_objects_successful'], 0)
-        self.assertEqual(ret_val['status'], 'failed')
+        self.assertEqual(ret_val["result_summary"]["total_objects"], 1)
+        self.assertEqual(ret_val["result_summary"]["total_objects_successful"], 0)
+        self.assertEqual(ret_val["status"], "failed")
 
 
 # Helper class to create a mock response object

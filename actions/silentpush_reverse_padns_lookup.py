@@ -1,6 +1,6 @@
 # File: silentpush_reverse_padns_lookup.py
 #
-# Copyright (c) 2024 Splunk Inc.
+# Copyright (c) 2024-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -69,7 +69,10 @@ class ReversePadnsLookup(BaseAction):
 
         if "netmask" in self._param:
             ret_val, value = self._connector.validator.validate_integer(
-                self._action_result, self._param.get("netmask"), "netmask", allow_zero=True
+                self._action_result,
+                self._param.get("netmask"),
+                "netmask",
+                allow_zero=True,
             )
 
             if not ret_val:
@@ -105,7 +108,10 @@ class ReversePadnsLookup(BaseAction):
 
         if "max_wait" in self._param:
             ret_val, value = self._connector.validator.validate_integer(
-                self._action_result, self._param.get("max_wait"), "max_wait", allow_zero=True
+                self._action_result,
+                self._param.get("max_wait"),
+                "max_wait",
+                allow_zero=True,
             )
 
             if not ret_val:
@@ -138,8 +144,11 @@ class ReversePadnsLookup(BaseAction):
             self._param["limit"] = value
 
         if "sort" in self._param:
-            sort_list = [clean_sort for sort in self._param.get('sort', "").split(',') if (
-                clean_sort := sort.strip())]
+            sort_list = [
+                clean_sort
+                for sort in self._param.get("sort", "").split(",")
+                if (clean_sort := sort.strip())
+            ]
 
             if len(sort_list):
                 self._param["sort"] = "&sort=".join(sort_list)
@@ -221,6 +230,5 @@ class ReversePadnsLookup(BaseAction):
         self._action_result.add_data(response)
 
         return self._action_result.set_status(
-            phantom.APP_SUCCESS,
-            consts.ACTION_REVERSE_LOOKUP_SUCCESS_RESPONSE
+            phantom.APP_SUCCESS, consts.ACTION_REVERSE_LOOKUP_SUCCESS_RESPONSE
         )
