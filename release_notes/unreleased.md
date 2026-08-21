@@ -1,3 +1,2 @@
 **Unreleased**
-
-* Update Python version for 3.13
+* Added support for python version 3.13
