@@ -30,13 +30,8 @@ class SilentpushAction(unittest.TestCase):
     def setUp(self):
         self.connector = SilentpushConnector()
         self.test_json = dict(silentpush_constant.TEST_JSON)
-        self.test_json["config"] = {
-            **self.test_json["config"],
-            **silentpush_constant.APIKEY_AUTH_CONFIG,
-        }
-        self.test_json.update(
-            {"action": "list domain infratags", "identifier": "list_domain_infratags"}
-        )
+        self.test_json["config"] = {**self.test_json["config"], **silentpush_constant.APIKEY_AUTH_CONFIG}
+        self.test_json.update({"action": "list domain infratags", "identifier": "list_domain_infratags"})
         self.run_job_endpoint = consts.LIST_DOMAIN_INFRATAGS_ENDPOINT
 
         return super().setUp()
@@ -47,20 +42,12 @@ class SilentpushAction(unittest.TestCase):
         Patch the post() to run job.
         """
         self.test_json["parameters"] = [
-            {
-                "mode": "PADNS",
-                "match": "Full",
-                "as_of": "2021-07-09",
-                "clusters": True,
-                "domains": silentpush_constant.MULTIPLE_DOMAINS,
-            }
+            {"mode": "PADNS", "match": "Full", "as_of": "2021-07-09", "clusters": True, "domains": silentpush_constant.MULTIPLE_DOMAINS}
         ]
 
         mock_post.return_value.status_code = 200
         mock_post.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_post.return_value.json.return_value = (
-            silentpush_responses.LIST_DOMAIN_INFRATAGS_VALID_RESP
-        )
+        mock_post.return_value.json.return_value = silentpush_responses.LIST_DOMAIN_INFRATAGS_VALID_RESP
 
         req_data = {"domains": ["abc.com", "xyz.io", "def.com", "silentpush.com"]}
 
@@ -71,8 +58,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}'
-            f"{self.run_job_endpoint}?mode=padns&match=full&as_of=2021-07-09&clusters=1",
+            f"{self.test_json['config']['base_url']}{self.run_job_endpoint}?mode=padns&match=full&as_of=2021-07-09&clusters=1",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
@@ -85,20 +71,12 @@ class SilentpushAction(unittest.TestCase):
         Patch the post() to run job.
         """
         self.test_json["parameters"] = [
-            {
-                "mode": "PADNS",
-                "match": "Full",
-                "as_of": "2021-07-09",
-                "clusters": True,
-                "domains": silentpush_constant.MULTIPLE_DOMAINS,
-            }
+            {"mode": "PADNS", "match": "Full", "as_of": "2021-07-09", "clusters": True, "domains": silentpush_constant.MULTIPLE_DOMAINS}
         ]
 
         mock_post.return_value.status_code = 400
         mock_post.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_post.return_value.json.return_value = (
-            silentpush_constant.MISSING_REQUIRED_PARAMETER
-        )
+        mock_post.return_value.json.return_value = silentpush_constant.MISSING_REQUIRED_PARAMETER
 
         req_data = {"domains": ["abc.com", "xyz.io", "def.com", "silentpush.com"]}
 
@@ -109,8 +87,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_post.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}'
-            f"{self.run_job_endpoint}?mode=padns&match=full&as_of=2021-07-09&clusters=1",
+            f"{self.test_json['config']['base_url']}{self.run_job_endpoint}?mode=padns&match=full&as_of=2021-07-09&clusters=1",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
@@ -123,13 +100,7 @@ class SilentpushAction(unittest.TestCase):
         Patch the post() to run job.
         """
         self.test_json["parameters"] = [
-            {
-                "mode": "{'ok': True}",
-                "match": "Full",
-                "as_of": "2021-07-09",
-                "clusters": True,
-                "domains": silentpush_constant.MULTIPLE_DOMAINS,
-            }
+            {"mode": "{'ok': True}", "match": "Full", "as_of": "2021-07-09", "clusters": True, "domains": silentpush_constant.MULTIPLE_DOMAINS}
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
@@ -143,15 +114,7 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the post() to run job.
         """
-        self.test_json["parameters"] = [
-            {
-                "mode": "PADNS",
-                "match": "Full",
-                "as_of": "2021-07-09",
-                "clusters": True,
-                "domains": ",,,,,,,,,",
-            }
-        ]
+        self.test_json["parameters"] = [{"mode": "PADNS", "match": "Full", "as_of": "2021-07-09", "clusters": True, "domains": ",,,,,,,,,"}]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -165,13 +128,7 @@ class SilentpushAction(unittest.TestCase):
         Patch the post() to run job.
         """
         self.test_json["parameters"] = [
-            {
-                "mode": "PADNS",
-                "match": "{'ok': True}",
-                "as_of": "2021-07-09",
-                "clusters": True,
-                "domains": silentpush_constant.MULTIPLE_DOMAINS,
-            }
+            {"mode": "PADNS", "match": "{'ok': True}", "as_of": "2021-07-09", "clusters": True, "domains": silentpush_constant.MULTIPLE_DOMAINS}
         ]
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)

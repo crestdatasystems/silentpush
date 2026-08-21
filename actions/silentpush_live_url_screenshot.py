@@ -40,16 +40,12 @@ class LiveUrlScreenshot(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(
-            consts.EXECUTION_START_MESSAGE.format("live_url_screenshot")
-        )
+        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format("live_url_screenshot"))
 
         query_params = self.__get_query_params()
         endpoint, method = self.__get_request_url_and_method()
 
-        ret_val, response = self.__make_rest_call(
-            url=endpoint, method=method, param=query_params
-        )
+        ret_val, response = self.__make_rest_call(url=endpoint, method=method, param=query_params)
 
         return self.__handle_response(ret_val, response)
 
@@ -70,15 +66,10 @@ class LiveUrlScreenshot(BaseAction):
 
     def __make_rest_call(self, url, method, headers=None, param=None):
         """Invoke API"""
-        args = {
-            "endpoint": url,
-            "action_result": self._action_result,
-            "method": method.lower(),
-            "headers": headers or {},
-        }
+        args = {"endpoint": url, "action_result": self._action_result, "method": method.lower(), "headers": headers or {}}
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         return self._connector.util.make_rest_call(**args)
 
@@ -91,18 +82,11 @@ class LiveUrlScreenshot(BaseAction):
         Returns:
             Tuple: A tuple containing  the status and the downloaded image.
         """
-        ret_val, image = self._connector.util.make_rest_call_for_image(
-            url, self._action_result
-        )
+        ret_val, image = self._connector.util.make_rest_call_for_image(url, self._action_result)
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
-        return (
-            self._action_result.set_status(
-                phantom.APP_SUCCESS, "Screenshot downloaded successfully"
-            ),
-            image,
-        )
+        return self._action_result.set_status(phantom.APP_SUCCESS, "Screenshot downloaded successfully"), image
 
     def __save_screenshot(self, file_name, image):
         """Save the screenshot to a temporary file, add it to the vault, and return the
@@ -121,9 +105,7 @@ class LiveUrlScreenshot(BaseAction):
         else:
             temp_dir = os.path.join(paths.PHANTOM_VAULT, "tmp")
 
-        file_path = tempfile.NamedTemporaryFile(
-            dir=temp_dir, suffix=".jpg", prefix="tmp_", delete=False
-        ).name
+        file_path = tempfile.NamedTemporaryFile(dir=temp_dir, suffix=".jpg", prefix="tmp_", delete=False).name
 
         try:
             with open(file_path, "wb") as f:
@@ -135,45 +117,20 @@ class LiveUrlScreenshot(BaseAction):
                 file_name=file_name,
             )
             if not success:
-                return (
-                    self._action_result.set_status(
-                        phantom.APP_ERROR,
-                        f"Error adding file to the vault, Error: {msg}",
-                    ),
-                    None,
-                    None,
-                )
+                return self._action_result.set_status(phantom.APP_ERROR, f"Error adding file to the vault, Error: {msg}"), None, None
 
-            _, _, vault_meta_info = ph_rules.vault_info(
-                container_id=self._connector.get_container_id(), vault_id=vault_id
-            )
+            _, _, vault_meta_info = ph_rules.vault_info(container_id=self._connector.get_container_id(), vault_id=vault_id)
             if not vault_meta_info:
                 return (
-                    self._action_result.set_status(
-                        phantom.APP_ERROR,
-                        "Could not find meta information of the downloaded screenshot's Vault",
-                    ),
+                    self._action_result.set_status(phantom.APP_ERROR, "Could not find meta information of the downloaded screenshot's Vault"),
                     None,
                     None,
                 )
 
         except Exception as e:
-            return (
-                self._action_result.set_status(
-                    phantom.APP_ERROR,
-                    f"Failed to download screenshot in Vault. Error : {e}",
-                ),
-                None,
-                None,
-            )
+            return self._action_result.set_status(phantom.APP_ERROR, f"Failed to download screenshot in Vault. Error : {e}"), None, None
 
-        return (
-            self._action_result.set_status(
-                phantom.APP_SUCCESS, "Screenshot downloaded successfully"
-            ),
-            vault_id,
-            vault_meta_info,
-        )
+        return self._action_result.set_status(phantom.APP_SUCCESS, "Screenshot downloaded successfully"), vault_id, vault_meta_info
 
     def __handle_response(self, ret_val, response):
         """Process response received from the third party API"""
@@ -184,17 +141,11 @@ class LiveUrlScreenshot(BaseAction):
 
         if (
             response.get("response", {}).get("screenshot", {}).get("message")
-            and response.get("response", {}).get("screenshot", {}).get("response")
-            != 200
+            and response.get("response", {}).get("screenshot", {}).get("response") != 200
         ):
-            return self._action_result.set_status(
-                phantom.APP_ERROR,
-                response.get("response", {}).get("screenshot", {}).get("message"),
-            )
+            return self._action_result.set_status(phantom.APP_ERROR, response.get("response", {}).get("screenshot", {}).get("message"))
         elif not response.get("response", {}).get("screenshot", {}).get("message"):
-            return self._action_result.set_status(
-                phantom.APP_ERROR, "Could not find meta information of the screenshot's"
-            )
+            return self._action_result.set_status(phantom.APP_ERROR, "Could not find meta information of the screenshot's")
 
         url = response.get("response", {}).get("screenshot", {}).get("message")
         ret_val, image = self.__get_screenshot(url)
@@ -216,6 +167,4 @@ class LiveUrlScreenshot(BaseAction):
         }
         self._action_result.update_summary(summary)
 
-        return self._action_result.set_status(
-            phantom.APP_SUCCESS, consts.ACTION_LIVE_URL_SCREENSHOT_SUCCESS_RESPONSE
-        )
+        return self._action_result.set_status(phantom.APP_SUCCESS, consts.ACTION_LIVE_URL_SCREENSHOT_SUCCESS_RESPONSE)

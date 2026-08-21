@@ -30,19 +30,9 @@ class SilentpushAction(unittest.TestCase):
     def setUp(self):
         self.connector = SilentpushConnector()
         self.test_json = dict(silentpush_constant.TEST_JSON)
-        self.test_json["config"] = {
-            **self.test_json["config"],
-            **silentpush_constant.APIKEY_AUTH_CONFIG,
-        }
-        self.test_json.update(
-            {
-                "action": "get asn takedown reputation",
-                "identifier": "get_asn_takedown_reputation",
-            }
-        )
-        self.run_job_endpoint = consts.GET_ASN_TAKEDOWN_REPUTATION_ENDPOINT.replace(
-            "{{asn}}", "1"
-        )
+        self.test_json["config"] = {**self.test_json["config"], **silentpush_constant.APIKEY_AUTH_CONFIG}
+        self.test_json.update({"action": "get asn takedown reputation", "identifier": "get_asn_takedown_reputation"})
+        self.run_job_endpoint = consts.GET_ASN_TAKEDOWN_REPUTATION_ENDPOINT.replace("{{asn}}", "1")
 
         return super().setUp()
 
@@ -55,9 +45,7 @@ class SilentpushAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = (
-            silentpush_responses.GET_ASN_TAKEDOWN_REPUTATION_VALID_RESP
-        )
+        mock_get.return_value.json.return_value = silentpush_responses.GET_ASN_TAKEDOWN_REPUTATION_VALID_RESP
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -66,7 +54,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{self.run_job_endpoint}?limit=3&explain=1',
+            f"{self.test_json['config']['base_url']}{self.run_job_endpoint}?limit=3&explain=1",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
@@ -81,9 +69,7 @@ class SilentpushAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = (
-            silentpush_constant.MISSING_REQUIRED_PARAMETER
-        )
+        mock_get.return_value.json.return_value = silentpush_constant.MISSING_REQUIRED_PARAMETER
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -92,7 +78,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{self.run_job_endpoint}?limit=3&explain=1',
+            f"{self.test_json['config']['base_url']}{self.run_job_endpoint}?limit=3&explain=1",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},

@@ -30,13 +30,8 @@ class SilentpushAction(unittest.TestCase):
     def setUp(self):
         self.connector = SilentpushConnector()
         self.test_json = dict(silentpush_constant.TEST_JSON)
-        self.test_json["config"] = {
-            **self.test_json["config"],
-            **silentpush_constant.APIKEY_AUTH_CONFIG,
-        }
-        self.test_json.update(
-            {"action": "search domains", "identifier": "search_domains"}
-        )
+        self.test_json["config"] = {**self.test_json["config"], **silentpush_constant.APIKEY_AUTH_CONFIG}
+        self.test_json.update({"action": "search domains", "identifier": "search_domains"})
         self.run_job_endpoint = consts.DOMAIN_SEARCH_ENDPOINT
 
         return super().setUp()
@@ -66,9 +61,7 @@ class SilentpushAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = (
-            silentpush_responses.DOMAIN_SEARCH_VALID_RESP
-        )
+        mock_get.return_value.json.return_value = silentpush_responses.DOMAIN_SEARCH_VALID_RESP
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -77,7 +70,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}'
+            f"{self.test_json['config']['base_url']}"
             f"{self.run_job_endpoint}?domain=%2A.silentpush.com&domain_regex=silent%2A&nsname=self&asnum=15169&asname"
             f"=BCD-AES%2C+US&ip_diversity_all_min=2&registrar=Mark&asn_diversity_min=1&cert_issuer=GTS+CA+1P5"
             f"&whois_date_after=1980-01-01&limit=5&skip=1",
@@ -103,7 +96,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{self.run_job_endpoint}?domain=googlecom&limit=5',
+            f"{self.test_json['config']['base_url']}{self.run_job_endpoint}?domain=googlecom&limit=5",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
@@ -141,7 +134,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}'
+            f"{self.test_json['config']['base_url']}"
             f"{self.run_job_endpoint}?domain=silentpush.com&domain_regex=%2A.silentpush.com&nsname=self&asnum=15169"
             f"&asname=BCD-AES%2C+US&ip_diversity_all_min=2&registrar=Mark&asn_diversity_min=1&cert_issuer=GTS+CA+1P5"
             f"&whois_date_after=1980-01-01&limit=5&skip=1",

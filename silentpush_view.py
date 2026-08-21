@@ -13,9 +13,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
-FORWARD_REVERSE_PADNS_LOOKUPS_VIEW = (
-    "views/silentpush_forward_and_reverse_padns_lookup.html"
-)
+FORWARD_REVERSE_PADNS_LOOKUPS_VIEW = "views/silentpush_forward_and_reverse_padns_lookup.html"
 
 
 def get_ctx_result(result, provides):
@@ -91,30 +89,12 @@ def check_job_ouptut(results):
         return "views/silentpush_get_job_status_view.html"
     elif results[0].get("data", [{}])[0].get("response", {}).get("domain_certificates"):
         return "views/silentpush_get_domain_certificates.html"
-    elif (
-        results[0]
-        .get("data", [{}])[0]
-        .get("response", {})
-        .get("records")[0]
-        .get("host")
-    ):
+    elif results[0].get("data", [{}])[0].get("response", {}).get("records")[0].get("host"):
         return "views/silentpush_search_domains.html"
-    elif (
-        results[0]
-        .get("data", [{}])[0]
-        .get("response", {})
-        .get("records")[0]
-        .get("query")
-    ):
+    elif results[0].get("data", [{}])[0].get("response", {}).get("records")[0].get("query"):
         results[0]["padns"] = True
         return FORWARD_REVERSE_PADNS_LOOKUPS_VIEW
-    elif (
-        results[0]
-        .get("data", [{}])[0]
-        .get("response", {})
-        .get("records")[0]
-        .get("rrname")
-    ):
+    elif results[0].get("data", [{}])[0].get("response", {}).get("records")[0].get("rrname"):
         results[0]["cof"] = True
         return FORWARD_REVERSE_PADNS_LOOKUPS_VIEW
 
@@ -225,9 +205,7 @@ def display_view_list_domain_information(provides, all_app_runs, context):
     """
     context["results"] = []
     for summary, action_results in all_app_runs:
-        context["results"].extend(
-            process_view_list_domain_action_results(action_results, provides)
-        )
+        context["results"].extend(process_view_list_domain_action_results(action_results, provides))
 
     if provides == "list domain information":
         return "views/silentpush_list_domain_information.html"
@@ -249,11 +227,7 @@ def display_view_forward_and_reverse_lookup(provides, all_app_runs, context):
         for result in action_results:
             ctx_result = get_ctx_result(result, provides)
             data = result.get_data()
-            if (
-                data
-                and not data[0].get("response", {}).get("job_status")
-                and not data[0].get("response", {}).get("error")
-            ):
+            if data and not data[0].get("response", {}).get("job_status") and not data[0].get("response", {}).get("error"):
                 data = data[0]["response"]["records"]
                 ctx_result["cof"] = any(record.get("rrname") for record in data)
                 ctx_result["padns"] = any(record.get("query") for record in data)

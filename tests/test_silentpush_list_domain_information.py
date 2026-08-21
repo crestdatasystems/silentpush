@@ -42,12 +42,8 @@ class SilentpushAction(unittest.TestCase):
             }
         )
         self.run_domain_info_job_endpoint = consts.LIST_DOMAIN_INFORMATION_ENDPOINT
-        self.run_risk_score_job_endpoint = (
-            consts.LIST_DOMAIN_ENDPOINT_RISK_SCORE_ENDPOINT
-        )
-        self.run_whois_info_job_endpoint = (
-            consts.LIST_DOMAIN_ENDPOINT_WHOIS_INFO_ENDPOINT
-        )
+        self.run_risk_score_job_endpoint = consts.LIST_DOMAIN_ENDPOINT_RISK_SCORE_ENDPOINT
+        self.run_whois_info_job_endpoint = consts.LIST_DOMAIN_ENDPOINT_WHOIS_INFO_ENDPOINT
 
         return super().setUp()
 
@@ -66,21 +62,14 @@ class SilentpushAction(unittest.TestCase):
         ]
 
         req_data = {"domains": ["google.com", "silentpush.com"]}
-        with patch("silentpush_utils.requests.post") as mock_post, patch(
-            "silentpush_utils.requests.get"
-        ) as mock_get:
-
+        with patch("silentpush_utils.requests.post") as mock_post, patch("silentpush_utils.requests.get") as mock_get:
             mock_post.return_value.status_code = 200
             mock_post.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-            mock_post.return_value.json.return_value = (
-                silentpush_responses.LIST_DOMAIN_INFORMATION_DOMAIN_VALID_RESP
-            )
+            mock_post.return_value.json.return_value = silentpush_responses.LIST_DOMAIN_INFORMATION_DOMAIN_VALID_RESP
 
             mock_get.return_value.status_code = 200
             mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-            mock_get.return_value.json.return_value = (
-                silentpush_responses.LIST_DOMAIN_INFORMATION_WHOIS_VALID_RESP
-            )
+            mock_get.return_value.json.return_value = silentpush_responses.LIST_DOMAIN_INFORMATION_WHOIS_VALID_RESP
 
             ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
             ret_val = json.loads(ret_val)
@@ -90,14 +79,14 @@ class SilentpushAction(unittest.TestCase):
 
             expected_post_calls = [
                 call(
-                    f'{self.test_json["config"]["base_url"]}{self.run_domain_info_job_endpoint}',
+                    f"{self.test_json['config']['base_url']}{self.run_domain_info_job_endpoint}",
                     timeout=consts.REQUEST_DEFAULT_TIMEOUT,
                     verify=False,
                     headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
                     json=req_data,
                 ),
                 call(
-                    f'{self.test_json["config"]["base_url"]}{self.run_risk_score_job_endpoint}',
+                    f"{self.test_json['config']['base_url']}{self.run_risk_score_job_endpoint}",
                     timeout=consts.REQUEST_DEFAULT_TIMEOUT,
                     verify=False,
                     headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
@@ -106,13 +95,13 @@ class SilentpushAction(unittest.TestCase):
             ]
             expected_get_calls = [
                 call(
-                    f'{self.test_json["config"]["base_url"]}{self.run_whois_info_job_endpoint.format("google.com")}',
+                    f"{self.test_json['config']['base_url']}{self.run_whois_info_job_endpoint.format('google.com')}",
                     timeout=consts.REQUEST_DEFAULT_TIMEOUT,
                     verify=False,
                     headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
                 ),
                 call(
-                    f'{self.test_json["config"]["base_url"]}{self.run_whois_info_job_endpoint.format("silentpush.com")}',
+                    f"{self.test_json['config']['base_url']}{self.run_whois_info_job_endpoint.format('silentpush.com')}",
                     timeout=consts.REQUEST_DEFAULT_TIMEOUT,
                     verify=False,
                     headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
@@ -140,9 +129,7 @@ class SilentpushAction(unittest.TestCase):
         with patch("silentpush_utils.requests.post") as mock_post:
             mock_post.return_value.status_code = 400
             mock_post.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-            mock_post.return_value.json.return_value = (
-                silentpush_responses.LIST_DOMAIN_INFORMATION_DOMAIN_VALID_RESP
-            )
+            mock_post.return_value.json.return_value = silentpush_responses.LIST_DOMAIN_INFORMATION_DOMAIN_VALID_RESP
 
             ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
             ret_val = json.loads(ret_val)
@@ -151,20 +138,14 @@ class SilentpushAction(unittest.TestCase):
             self.assertEqual(ret_val["status"], "failed")
 
             mock_post.assert_called_with(
-                f'{self.test_json["config"]["base_url"]}{self.run_domain_info_job_endpoint}',
+                f"{self.test_json['config']['base_url']}{self.run_domain_info_job_endpoint}",
                 timeout=consts.REQUEST_DEFAULT_TIMEOUT,
                 verify=False,
                 headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
                 json=req_data,
             )
 
-    @parameterized.expand(
-        [
-            ["silentpush.com", "test", False],
-            ["silentpush.com", False, "test"],
-            [",,,,", False, False],
-        ]
-    )
+    @parameterized.expand([["silentpush.com", "test", False], ["silentpush.com", False, "test"], [",,,,", False, False]])
     def test_list_domain_information_boolean_invalid(self, domains, risk_score, whois):
         """
         Test the invalid case for the list domain information action.

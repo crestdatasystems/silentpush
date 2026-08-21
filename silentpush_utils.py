@@ -13,12 +13,21 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+import ast
+import csv
+import io
 import json
+import re
+import tempfile
 import time
+import uuid
+from urllib.parse import unquote, urlsplit
 
 import phantom.app as phantom
+import phantom.rules as ph_rules
 import requests
 from bs4 import BeautifulSoup
+from phantom.vault import Vault
 
 import silentpush_consts as consts
 
@@ -31,7 +40,7 @@ class RetVal(tuple):
         return tuple.__new__(RetVal, (val1, val2))
 
 
-class SilentpushUtils(object):
+class SilentpushUtils:
     """This class holds all the util methods."""
 
     def __init__(self, connector=None):
@@ -55,9 +64,7 @@ class SilentpushUtils(object):
                 elif len(e.args) == 1:
                     error_msg = e.args[0]
         except Exception as e:
-            self._connector.error_print(
-                f"Error occurred while fetching exception information. Details: {str(e)}"
-            )
+            self._connector.error_print(f"Error occurred while fetching exception information. Details: {e!s}")
 
         if not error_code:
             error_text = f"Error message: {error_msg}"
@@ -71,11 +78,7 @@ class SilentpushUtils(object):
             return RetVal(phantom.APP_SUCCESS, {})
 
         return RetVal(
-            action_result.set_status(
-                phantom.APP_ERROR,
-                "Empty response and no information in the header,"
-                " Status Code: {}".format(response.status_code),
-            ),
+            action_result.set_status(phantom.APP_ERROR, f"Empty response and no information in the header, Status Code: {response.status_code}"),
             None,
         )
 
@@ -101,9 +104,7 @@ class SilentpushUtils(object):
         # Large HTML pages may be returned by the wrong URLs.
         # Use default error message in place of large HTML page.
         if len(message) > 500:
-            return RetVal(
-                action_result.set_status(phantom.APP_ERROR, consts.ERROR_HTML_RESPONSE)
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, consts.ERROR_HTML_RESPONSE))
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message))
 
@@ -112,32 +113,38 @@ class SilentpushUtils(object):
         try:
             resp_json = r.json()
         except Exception as e:
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR,
-                    "Unable to parse JSON response. Error: {0}".format(str(e)),
-                ),
-                None,
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Unable to parse JSON response. Error: {e!s}"), None)
 
         # Please specify the status codes here
         self._connector.error_print("Response", resp_json)
         if 200 <= r.status_code <= 399:
             if isinstance(resp_json, dict) and resp_json.get("status_code"):
                 if 200 <= resp_json.get("status_code") <= 399:
-                    if not error_path or not self.find_value_by_pattern(
-                        resp_json, error_path
-                    ):
+                    if not error_path or not self.find_value_by_pattern(resp_json, error_path):
                         return RetVal(phantom.APP_SUCCESS, resp_json)
             else:
                 return RetVal(phantom.APP_SUCCESS, resp_json)
 
+        if self._connector.get_action_identifier() == "get_data_export":
+            if 400 == r.status_code:
+                if isinstance(resp_json, dict) and error_path:
+                    return RetVal(
+                        action_result.set_status(
+                            phantom.APP_ERROR, f"Failed to fetch feed data: {self.find_value_by_pattern(resp_json, error_path) or resp_json}"
+                        ),
+                        resp_json,
+                    )
+
         # You should process the error returned in the json
-        message = "Error from server. Status Code: {0} Data from server: {1}".format(
-            r.status_code, r.text.replace("{", "{{").replace("}", "}}")
-        )
+        message = "Error from server. Status Code: {} Data from server: {}".format(r.status_code, r.text.replace("{", "{{").replace("}", "}}"))
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message))
+
+    def extract_uuid(self, url):
+        match = re.search(r"/([a-f0-9A-F\-]{36})", url)
+        if match:
+            return match.group(1)
+        return None
 
     def find_value_by_pattern(self, data, pattern):
         """Find value in JSON data using pattern."""
@@ -161,7 +168,7 @@ class SilentpushUtils(object):
 
         return current_data
 
-    def _process_response(self, r, action_result, error_path=None):
+    def _process_response(self, r, action_result, error_path=None, url=None):
         # store the r_text in debug data, it will get dumped in the logs if the action fails
         if hasattr(action_result, "add_debug_data"):
             action_result.add_debug_data({"r_status_code": r.status_code})
@@ -185,48 +192,109 @@ class SilentpushUtils(object):
         if not r.text:
             return self._process_empty_response(r, action_result)
 
+        if self._connector.get_action_identifier() == "get_data_export":
+            ret_val, vault_id = self._add_response_to_vault(r.text, action_result, url)
+            return RetVal(ret_val, vault_id)
         # everything else is actually an error at this point
-        message = "Can't process response from server. Status Code: {0} Data from server: {1}".format(
+        message = "Can't process response from server. Status Code: {} Data from server: {}".format(
             r.status_code, r.text.replace("{", "{{").replace("}", "}}")
         )
 
         return RetVal(action_result.set_status(phantom.APP_ERROR, message), None)
 
-    def make_rest_call(
-        self, endpoint, action_result, method="get", error_path=None, **kwargs
-    ):
+    def _add_response_to_vault(self, response, action_result, endpoint):
+        """Add response to vault"""
+        self._connector.save_progress("Adding data to vault")
+        if not response:
+            message = "No data found"
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Error adding file to the vault: {message}"), None)
+
+        file_extension = "csv"
+        try:
+            response = self._sanitize_csv(response)
+        except csv.Error:
+            file_extension = "txt"
+
+        with tempfile.NamedTemporaryFile(mode="w", dir=Vault.get_vault_tmp_dir(), delete=False, encoding="utf-8") as f:
+            tmp_file_path = f.name
+            f.write(response)
+        feed_uuid = self.extract_uuid(endpoint) or uuid.uuid4()
+        file_name = f"feed_{feed_uuid}.{file_extension}"
+        self._connector.save_progress(f"Filename for vault attachment: {file_name}")
+        success, msg, vault_id = ph_rules.vault_add(
+            container=self._connector.get_container_id(),
+            file_location=tmp_file_path,
+            file_name=file_name,
+        )
+        if not success:
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Error adding file to the vault, Error: {msg}"), None)
+
+        return RetVal(action_result.set_status(phantom.APP_SUCCESS, consts.ACTION_GET_DATA_EXPORT_SUCCESS_RESPONSE), vault_id)
+
+    @staticmethod
+    def _sanitize_csv(response):
+        """Neutralize spreadsheet formula prefixes in every CSV cell."""
+        source = io.StringIO(response, newline="")
+        destination = io.StringIO(newline="")
+        reader = csv.reader(source, strict=True)
+        writer = csv.writer(destination, lineterminator="\n")
+
+        for row in reader:
+            writer.writerow([f"'{cell}" if cell.startswith(("=", "+", "-", "@", "\t", "\r")) else cell for cell in row])
+
+        return destination.getvalue()
+
+    @staticmethod
+    def _validate_export_url(url):
+        """Restrict dynamic export downloads to the documented Silent Push endpoint."""
+        try:
+            parsed = urlsplit(url)
+            decoded_path = unquote(parsed.path)
+            port = parsed.port
+        except (TypeError, ValueError):
+            return False
+
+        path_segments = decoded_path.split("/")
+        return (
+            parsed.scheme == "https"
+            and parsed.hostname == consts.EXPORT_DOWNLOAD_HOST
+            and port in (None, 443)
+            and parsed.username is None
+            and parsed.password is None
+            and not parsed.fragment
+            and parsed.path.startswith(consts.EXPORT_DOWNLOAD_PATH_PREFIX)
+            and decoded_path.startswith(consts.EXPORT_DOWNLOAD_PATH_PREFIX)
+            and not any(segment in (".", "..") for segment in path_segments)
+        )
+
+    def make_rest_call(self, endpoint, action_result, method="get", error_path=None, **kwargs):
         resp_json = None
 
         try:
             request_func = getattr(requests, method)
         except AttributeError:
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR, "Invalid method: {0}".format(method)
-                ),
-                resp_json,
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Invalid method: {method}"), resp_json)
 
         # Create a URL to connect to
         url = f"{consts.BASE_URL.strip('/')}{endpoint}"
 
-        kwargs["headers"] = {
-            **self.get_auth_headers(self._connector.config),
-            **(kwargs.get("headers") or {}),
-        }
+        if self._connector.get_action_identifier() == "get_data_export":
+            if not self._validate_export_url(endpoint):
+                return RetVal(
+                    action_result.set_status(phantom.APP_ERROR, "Feed URL must use the documented Silent Push HTTPS export endpoint"),
+                    resp_json,
+                )
+            url = endpoint
+            kwargs["allow_redirects"] = False
+
+        kwargs["headers"] = {**self.get_auth_headers(self._connector.config), **(kwargs.get("headers") or {})}
 
         status, r = self.invoke_api(request_func, url, counter=0, **kwargs)
 
         if not status:
-            return RetVal(
-                action_result.set_status(
-                    phantom.APP_ERROR,
-                    "Error Connecting to server. Details: {0}".format(str(r)),
-                ),
-                resp_json,
-            )
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Error Connecting to server. Details: {r!s}"), resp_json)
 
-        return self._process_response(r, action_result, error_path)
+        return self._process_response(r, action_result, error_path, url)
 
     def make_rest_call_for_image(self, url, action_result):
         try:
@@ -237,28 +305,20 @@ class SilentpushUtils(object):
 
             if response.status_code == 200:
                 return action_result.set_status(phantom.APP_SUCCESS), response.content
-            return action_result.set_status(
-                phantom.APP_ERROR, "Failed to download screenshot"
-            )
+            return action_result.set_status(phantom.APP_ERROR, "Failed to download screenshot")
         except Exception as e:
-            return action_result.set_status(
-                phantom.APP_ERROR, f"Failed to download screenshot. Details: {e}"
-            )
+            return action_result.set_status(phantom.APP_ERROR, f"Failed to download screenshot. Details: {e}")
 
     def invoke_api(self, request_func, url, counter=0, **kwargs):
+        timeout = consts.REQUEST_DEFAULT_TIMEOUT
+        if self._connector.get_action_identifier() == "get_data_export":
+            timeout = consts.EXPORT_REQUEST_DEFAULT_TIMEOUT
         try:
-            r = request_func(
-                url,
-                timeout=consts.REQUEST_DEFAULT_TIMEOUT,
-                verify=self._connector.config.get("verify_server_cert", False),
-                **kwargs,
-            )
+            r = request_func(url, timeout=timeout, verify=self._connector._verify, **kwargs)
             return True, r
         except Exception as e:
             if "ConnectTimeoutError" in str(e) and counter < consts.MAX_RETRIES:
-                self._connector.debug_print(
-                    f"Connection timeout while making a rest call. Retrying {counter + 2} time"
-                )
+                self._connector.debug_print(f"Connection timeout while making a rest call. Retrying {counter + 2} time")
                 time.sleep(10)
                 return self.invoke_api(request_func, url, counter + 1, **kwargs)
             return False, e
@@ -273,22 +333,11 @@ class SilentpushUtils(object):
 
     def generate_json_body(self, body, allow_none, allow_empty, param, default_values):
         def _get_empty_value(_type):
-            empty_values = {
-                "string": "",
-                "boolean": "",
-                "integer": 0,
-                "float": 0,
-                "dict": {},
-                "list": [],
-            }
+            empty_values = {"string": "", "boolean": "", "integer": 0, "float": 0, "dict": {}, "list": []}
             return empty_values.get(_type, "")
 
         def _handle_template_value(key, value, body):
-            if (
-                not isinstance(value, str)
-                or not value.startswith("{{")
-                or not value.endswith("}}")
-            ):
+            if not isinstance(value, str) or not value.startswith("{{") or not value.endswith("}}"):
                 body[key] = value
                 return
 
@@ -306,7 +355,7 @@ class SilentpushUtils(object):
         def _format_value(input_body, body, path=()):
             for key, value in input_body.items():
                 if isinstance(value, dict):
-                    body[key] = _format_value(value, {}, path + (key,))
+                    body[key] = _format_value(value, {}, (*path, key))
                 else:
                     _handle_template_value(key, value, body)
             return body
@@ -316,11 +365,8 @@ class SilentpushUtils(object):
 
 
 class Validator:
-
     @staticmethod
-    def validate_integer(
-        action_result, parameter, key, allow_zero=False, allow_negative=False
-    ):
+    def validate_integer(action_result, parameter, key, allow_zero=False, allow_negative=False):
         """Check if the provided input parameter value is valid.
 
         :param action_result: Action result or BaseConnector object
@@ -332,37 +378,16 @@ class Validator:
         """
         try:
             if not float(parameter).is_integer():
-                return (
-                    action_result.set_status(
-                        phantom.APP_ERROR,
-                        consts.ERROR_INVALID_INT_PARAM.format(key=key),
-                    ),
-                    None,
-                )
+                return action_result.set_status(phantom.APP_ERROR, consts.ERROR_INVALID_INT_PARAM.format(key=key)), None
 
             parameter = int(parameter)
         except Exception:
-            return (
-                action_result.set_status(
-                    phantom.APP_ERROR, consts.ERROR_INVALID_INT_PARAM.format(key=key)
-                ),
-                None,
-            )
+            return action_result.set_status(phantom.APP_ERROR, consts.ERROR_INVALID_INT_PARAM.format(key=key)), None
 
         if not allow_zero and parameter == 0:
-            return (
-                action_result.set_status(
-                    phantom.APP_ERROR, consts.ERROR_ZERO_INT_PARAM.format(key=key)
-                ),
-                None,
-            )
+            return action_result.set_status(phantom.APP_ERROR, consts.ERROR_ZERO_INT_PARAM.format(key=key)), None
         if not allow_negative and parameter < 0:
-            return (
-                action_result.set_status(
-                    phantom.APP_ERROR, consts.ERROR_NEG_INT_PARAM.format(key=key)
-                ),
-                None,
-            )
+            return action_result.set_status(phantom.APP_ERROR, consts.ERROR_NEG_INT_PARAM.format(key=key)), None
 
         return phantom.APP_SUCCESS, parameter
 
@@ -379,23 +404,12 @@ class Validator:
             parameter = json.loads(parameter.replace("'", "'"))
         except Exception:
             try:
-                parameter = eval(parameter)
+                parameter = ast.literal_eval(parameter)
             except Exception:
-                return (
-                    action_result.set_status(
-                        phantom.APP_ERROR,
-                        consts.ERROR_INVALID_JSON_PARAM.format(key=key),
-                    ),
-                    None,
-                )
+                return action_result.set_status(phantom.APP_ERROR, consts.ERROR_INVALID_JSON_PARAM.format(key=key)), None
 
         if not isinstance(parameter, dict):
-            return (
-                action_result.set_status(
-                    phantom.APP_ERROR, consts.ERROR_INVALID_JSON_PARAM.format(key=key)
-                ),
-                None,
-            )
+            return action_result.set_status(phantom.APP_ERROR, consts.ERROR_INVALID_JSON_PARAM.format(key=key)), None
 
         return phantom.APP_SUCCESS, parameter
 
@@ -409,12 +423,7 @@ class Validator:
         :returns: phantom.APP_SUCCESS/phantom.APP_ERROR and parameter value itself.
         """
         if not isinstance(parameter, bool):
-            return (
-                action_result.set_status(
-                    phantom.APP_ERROR, consts.ERROR_INVALID_BOOL_PARAM.format(key=key)
-                ),
-                None,
-            )
+            return action_result.set_status(phantom.APP_ERROR, consts.ERROR_INVALID_BOOL_PARAM.format(key=key)), None
 
         return phantom.APP_SUCCESS, parameter
 
@@ -430,14 +439,8 @@ class Validator:
         """
         parameter = parameter.lower()
         if parameter not in dropdown:
-            return (
-                action_result.set_status(
-                    phantom.APP_ERROR,
-                    consts.ERROR_INVALID_SELECTION.format(
-                        key, json.dumps(list(dropdown.keys()))
-                    ),
-                ),
-                None,
-            )
+            return action_result.set_status(
+                phantom.APP_ERROR, consts.ERROR_INVALID_SELECTION.format(key, json.dumps(list(dropdown.keys())))
+            ), None
 
         return phantom.APP_SUCCESS, dropdown.get(parameter)

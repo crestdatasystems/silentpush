@@ -22,6 +22,7 @@ from silentpush_connector import SilentpushConnector
 
 from . import silentpush_constant, silentpush_responses
 
+
 DOMAIN_REGEX = "^sil[[:alpha:]]{3}\\.[a-z]{2,}$"
 SORT = "last_seen/desc"
 INVALID_VALUE_LIST = "{'ok': True}"
@@ -34,16 +35,9 @@ class SilentpushAction(unittest.TestCase):
     def setUp(self):
         self.connector = SilentpushConnector()
         self.test_json = dict(silentpush_constant.TEST_JSON)
-        self.test_json["config"] = {
-            **self.test_json["config"],
-            **silentpush_constant.APIKEY_AUTH_CONFIG,
-        }
-        self.test_json.update(
-            {"action": "forward padns lookup", "identifier": "forward_padns_lookup"}
-        )
-        self.run_job_endpoint = consts.FORWARD_PADNS_LOOKUP_ENDPOINT.replace(
-            "{{qtype}}", "a"
-        ).replace("{{qname}}", "8.8.8.8")
+        self.test_json["config"] = {**self.test_json["config"], **silentpush_constant.APIKEY_AUTH_CONFIG}
+        self.test_json.update({"action": "forward padns lookup", "identifier": "forward_padns_lookup"})
+        self.run_job_endpoint = consts.FORWARD_PADNS_LOOKUP_ENDPOINT.replace("{{qtype}}", "a").replace("{{qname}}", "8.8.8.8")
 
         return super().setUp()
 
@@ -77,9 +71,7 @@ class SilentpushAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = (
-            silentpush_responses.FORWARD_PADNS_LOOKUP_VALID_RESP
-        )
+        mock_get.return_value.json.return_value = silentpush_responses.FORWARD_PADNS_LOOKUP_VALID_RESP
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -129,9 +121,7 @@ class SilentpushAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = (
-            silentpush_constant.MISSING_REQUIRED_PARAMETER
-        )
+        mock_get.return_value.json.return_value = silentpush_constant.MISSING_REQUIRED_PARAMETER
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -447,9 +437,7 @@ class SilentpushAction(unittest.TestCase):
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = (
-            silentpush_responses.FORWARD_PADNS_LOOKUP_VALID_RESP
-        )
+        mock_get.return_value.json.return_value = silentpush_responses.FORWARD_PADNS_LOOKUP_VALID_RESP
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)

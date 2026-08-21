@@ -35,9 +35,7 @@ class SearchScanData(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(
-            consts.EXECUTION_START_MESSAGE.format("search_scan_data")
-        )
+        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format("search_scan_data"))
 
         ret_val = self.__validate_params()
         if phantom.is_fail(ret_val):
@@ -47,9 +45,7 @@ class SearchScanData(BaseAction):
         request_body = self.__get_request_body()
         endpoint, method = self.__get_request_url_and_method()
 
-        ret_val, response = self.__make_rest_call(
-            url=endpoint, method=method, param=query_params, body=request_body
-        )
+        ret_val, response = self.__make_rest_call(url=endpoint, method=method, param=query_params, body=request_body)
 
         return self.__handle_response(ret_val, response)
 
@@ -57,11 +53,7 @@ class SearchScanData(BaseAction):
         """Validate parameters"""
         if "skip" in self._param:
             ret_val, value = self._connector.validator.validate_integer(
-                self._action_result,
-                self._param.get("skip"),
-                "skip",
-                allow_zero=True,
-                allow_negative=False,
+                self._action_result, self._param.get("skip"), "skip", allow_zero=True, allow_negative=False
             )
 
             if not ret_val:
@@ -71,10 +63,7 @@ class SearchScanData(BaseAction):
 
         if "limit" in self._param:
             ret_val, value = self._connector.validator.validate_integer(
-                self._action_result,
-                self._param.get("limit"),
-                "limit",
-                allow_negative=False,
+                self._action_result, self._param.get("limit"), "limit", allow_negative=False
             )
 
             if not ret_val:
@@ -87,20 +76,12 @@ class SearchScanData(BaseAction):
             self._param["query"] = value
 
         if "sort" in self._param:
-            sort_list = [
-                clean_sort
-                for sort in self._param["sort"].split(",")
-                if (clean_sort := sort.strip())
-            ]
+            sort_list = [clean_sort for sort in self._param["sort"].split(",") if (clean_sort := sort.strip())]
 
             self._param["sort"] = sort_list
 
         if "fields" in self._param:
-            fields_list = [
-                clean_fields
-                for fields in self._param["fields"].split(",")
-                if (clean_fields := fields.strip())
-            ]
+            fields_list = [clean_fields for fields in self._param["fields"].split(",") if (clean_fields := fields.strip())]
 
             self._param["fields"] = fields_list
 
@@ -113,11 +94,7 @@ class SearchScanData(BaseAction):
 
     def __get_query_params(self):
         """Get request query parameters"""
-        query_params = {
-            "skip": "skip",
-            "limit": "limit",
-            "with_metadata": "with_metadata",
-        }
+        query_params = {"skip": "skip", "limit": "limit", "with_metadata": "with_metadata"}
 
         payload = {}
         for key, value in query_params.items():
@@ -133,9 +110,7 @@ class SearchScanData(BaseAction):
         allow_empty = {"query": "string"}
         default_values = {}
 
-        return self._connector.util.generate_json_body(
-            body, allow_none, allow_empty, self._param, default_values
-        )
+        return self._connector.util.generate_json_body(body, allow_none, allow_empty, self._param, default_values)
 
     def __get_request_url_and_method(self):
         """Get request endpoint and method"""
@@ -143,23 +118,16 @@ class SearchScanData(BaseAction):
 
         endpoint = consts.SEARCH_SCAN_DATA_ENDPOINT
         for parameter in parameters:
-            endpoint = endpoint.replace(
-                "{{##}}".replace("##", parameter), str(self._param.get(parameter))
-            )
+            endpoint = endpoint.replace("{{##}}".replace("##", parameter), str(self._param.get(parameter)))
 
         return endpoint, "post"
 
     def __make_rest_call(self, url, method, headers=None, param=None, body=None):
         """Invoke API"""
-        args = {
-            "endpoint": url,
-            "action_result": self._action_result,
-            "method": method.lower(),
-            "headers": headers or {},
-        }
+        args = {"endpoint": url, "action_result": self._action_result, "method": method.lower(), "headers": headers or {}}
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         if body:
             args["json"] = body
@@ -174,6 +142,4 @@ class SearchScanData(BaseAction):
 
         self._action_result.add_data(response)
 
-        return self._action_result.set_status(
-            phantom.APP_SUCCESS, consts.ACTION_SEARCH_SCAN_DATA_SUCCESS_RESPONSE
-        )
+        return self._action_result.set_status(phantom.APP_SUCCESS, consts.ACTION_SEARCH_SCAN_DATA_SUCCESS_RESPONSE)

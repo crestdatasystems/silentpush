@@ -35,9 +35,7 @@ class GetIpv4Reputation(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(
-            consts.EXECUTION_START_MESSAGE.format("get_ipv4_reputation")
-        )
+        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format("get_ipv4_reputation"))
 
         ret_val = self.__validate_params()
         if phantom.is_fail(ret_val):
@@ -46,18 +44,14 @@ class GetIpv4Reputation(BaseAction):
         query_params = self.__get_query_params()
         endpoint, method = self.__get_request_url_and_method()
 
-        ret_val, response = self.__make_rest_call(
-            url=endpoint, method=method, param=query_params
-        )
+        ret_val, response = self.__make_rest_call(url=endpoint, method=method, param=query_params)
 
         return self.__handle_response(ret_val, response)
 
     def __validate_params(self):
         """Validate parameters."""
         if "limit" in self._param:
-            ret_val, value = self._connector.validator.validate_integer(
-                self._action_result, self._param.get("limit"), "limit"
-            )
+            ret_val, value = self._connector.validator.validate_integer(self._action_result, self._param.get("limit"), "limit")
 
             if not ret_val:
                 return ret_val
@@ -65,9 +59,7 @@ class GetIpv4Reputation(BaseAction):
             self._param["limit"] = value
 
         if "explain" in self._param:
-            ret_val, value = self._connector.validator.validate_boolean(
-                self._action_result, self._param.get("explain"), "explain"
-            )
+            ret_val, value = self._connector.validator.validate_boolean(self._action_result, self._param.get("explain"), "explain")
 
             if not ret_val:
                 return ret_val
@@ -93,23 +85,16 @@ class GetIpv4Reputation(BaseAction):
 
         endpoint = consts.GET_IPV4_REPUTATION_ENDPOINT
         for parameter in parameters:
-            endpoint = endpoint.replace(
-                "{{##}}".replace("##", parameter), str(self._param.get(parameter))
-            )
+            endpoint = endpoint.replace("{{##}}".replace("##", parameter), str(self._param.get(parameter)))
 
         return endpoint, "get"
 
     def __make_rest_call(self, url, method, headers=None, param=None, body=None):
         """Invoke API."""
-        args = {
-            "endpoint": url,
-            "action_result": self._action_result,
-            "method": method.lower(),
-            "headers": headers or {},
-        }
+        args = {"endpoint": url, "action_result": self._action_result, "method": method.lower(), "headers": headers or {}}
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         args["error_path"] = "response.ip_reputation_history.error"
         return self._connector.util.make_rest_call(**args)
@@ -121,13 +106,7 @@ class GetIpv4Reputation(BaseAction):
 
         self._action_result.add_data(response)
 
-        summary = {
-            "total_ip_reputations": len(
-                response.get("response", {}).get("ip_reputation_history", [])
-            )
-        }
+        summary = {"total_ip_reputations": len(response.get("response", {}).get("ip_reputation_history", []))}
         self._action_result.update_summary(summary)
 
-        return self._action_result.set_status(
-            phantom.APP_SUCCESS, consts.ACTION_IPV4_REPUTATION_SUCCESS_RESPONSE
-        )
+        return self._action_result.set_status(phantom.APP_SUCCESS, consts.ACTION_IPV4_REPUTATION_SUCCESS_RESPONSE)

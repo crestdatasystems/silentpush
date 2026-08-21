@@ -35,9 +35,7 @@ class GetAsnTakedownReputation(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(
-            consts.EXECUTION_START_MESSAGE.format("get_asn_takedown_reputation")
-        )
+        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format("get_asn_takedown_reputation"))
 
         ret_val = self.__validate_params()
         if phantom.is_fail(ret_val):
@@ -46,17 +44,13 @@ class GetAsnTakedownReputation(BaseAction):
         query_params = self.__get_query_params()
         endpoint, method = self.__get_request_url_and_method()
 
-        ret_val, response = self.__make_rest_call(
-            url=endpoint, method=method, param=query_params
-        )
+        ret_val, response = self.__make_rest_call(url=endpoint, method=method, param=query_params)
 
         return self.__handle_response(ret_val, response)
 
     def __validate_params(self):
         """Validate parameters."""
-        ret_val, value = self._connector.validator.validate_integer(
-            self._action_result, self._param.get("asn"), "asn"
-        )
+        ret_val, value = self._connector.validator.validate_integer(self._action_result, self._param.get("asn"), "asn")
 
         if not ret_val:
             return ret_val
@@ -64,9 +58,7 @@ class GetAsnTakedownReputation(BaseAction):
         self._param["asn"] = value
 
         if "limit" in self._param:
-            ret_val, value = self._connector.validator.validate_integer(
-                self._action_result, self._param.get("limit"), "limit"
-            )
+            ret_val, value = self._connector.validator.validate_integer(self._action_result, self._param.get("limit"), "limit")
 
             if not ret_val:
                 return ret_val
@@ -95,23 +87,16 @@ class GetAsnTakedownReputation(BaseAction):
 
         endpoint = consts.GET_ASN_TAKEDOWN_REPUTATION_ENDPOINT
         for parameter in parameters:
-            endpoint = endpoint.replace(
-                "{{##}}".replace("##", parameter), str(self._param.get(parameter))
-            )
+            endpoint = endpoint.replace("{{##}}".replace("##", parameter), str(self._param.get(parameter)))
 
         return endpoint, "get"
 
     def __make_rest_call(self, url, method, headers=None, param=None, body=None):
         """Invoke API."""
-        args = {
-            "endpoint": url,
-            "action_result": self._action_result,
-            "method": method.lower(),
-            "headers": headers or {},
-        }
+        args = {"endpoint": url, "action_result": self._action_result, "method": method.lower(), "headers": headers or {}}
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         args["error_path"] = "response.takedown_reputation_history.error"
         return self._connector.util.make_rest_call(**args)
@@ -123,13 +108,7 @@ class GetAsnTakedownReputation(BaseAction):
 
         self._action_result.add_data(response)
 
-        summary = {
-            "total_asn_takedown_reputations": len(
-                response.get("response", {}).get("takedown_reputation_history", [])
-            )
-        }
+        summary = {"total_asn_takedown_reputations": len(response.get("response", {}).get("takedown_reputation_history", []))}
         self._action_result.update_summary(summary)
 
-        return self._action_result.set_status(
-            phantom.APP_SUCCESS, consts.ACTION_ASN_TAKEDOWN_REPUTATION_SUCCESS_RESPONSE
-        )
+        return self._action_result.set_status(phantom.APP_SUCCESS, consts.ACTION_ASN_TAKEDOWN_REPUTATION_SUCCESS_RESPONSE)

@@ -37,9 +37,7 @@ class SilentpushAction(unittest.TestCase):
             **self.test_json["config"],
             **silentpush_constant.APIKEY_AUTH_CONFIG,
         }
-        self.test_json.update(
-            {"action": "density lookup", "identifier": "density_lookup"}
-        )
+        self.test_json.update({"action": "density lookup", "identifier": "density_lookup"})
 
         return super().setUp()
 
@@ -48,19 +46,13 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {"qtype": "NSSRV", "query": "1.1.1.1", "scope": "IP"}
-        ]
-        self.run_job_endpoint = self.run_job_endpoint.replace(
-            "{{qtype}}", "nssrv"
-        ).replace("{{query}}", "1.1.1.1")
+        self.test_json["parameters"] = [{"qtype": "NSSRV", "query": "1.1.1.1", "scope": "IP"}]
+        self.run_job_endpoint = self.run_job_endpoint.replace("{{qtype}}", "nssrv").replace("{{query}}", "1.1.1.1")
         scope = "ip"
 
         mock_get.return_value.status_code = 200
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = (
-            silentpush_responses.DENSITY_LOOKUP_VALID_RESP
-        )
+        mock_get.return_value.json.return_value = silentpush_responses.DENSITY_LOOKUP_VALID_RESP
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -69,7 +61,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "success")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{self.run_job_endpoint}?scope={scope}',
+            f"{self.test_json['config']['base_url']}{self.run_job_endpoint}?scope={scope}",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},
@@ -80,19 +72,13 @@ class SilentpushAction(unittest.TestCase):
 
         Patch the get() to run job.
         """
-        self.test_json["parameters"] = [
-            {"qtype": "NSSRV", "query": "1.1.1.1", "scope": "IP"}
-        ]
-        self.run_job_endpoint = self.run_job_endpoint.replace(
-            "{{qtype}}", "nssrv"
-        ).replace("{{query}}", "1.1.1.1")
+        self.test_json["parameters"] = [{"qtype": "NSSRV", "query": "1.1.1.1", "scope": "IP"}]
+        self.run_job_endpoint = self.run_job_endpoint.replace("{{qtype}}", "nssrv").replace("{{query}}", "1.1.1.1")
         scope = "ip"
 
         mock_get.return_value.status_code = 400
         mock_get.return_value.headers = silentpush_constant.DEFAULT_JSON_HEADERS
-        mock_get.return_value.json.return_value = (
-            silentpush_constant.MISSING_REQUIRED_PARAMETER
-        )
+        mock_get.return_value.json.return_value = silentpush_constant.MISSING_REQUIRED_PARAMETER
 
         ret_val = self.connector._handle_action(json.dumps(self.test_json), None)
         ret_val = json.loads(ret_val)
@@ -101,7 +87,7 @@ class SilentpushAction(unittest.TestCase):
         self.assertEqual(ret_val["status"], "failed")
 
         mock_get.assert_called_with(
-            f'{self.test_json["config"]["base_url"]}{self.run_job_endpoint}?scope={scope}',
+            f"{self.test_json['config']['base_url']}{self.run_job_endpoint}?scope={scope}",
             timeout=consts.REQUEST_DEFAULT_TIMEOUT,
             verify=False,
             headers={"X-API-KEY": silentpush_constant.DUMMY_API_TOKEN},

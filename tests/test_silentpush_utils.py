@@ -13,6 +13,7 @@
 # either express or implied. See the License for the specific language governing permissions
 # and limitations under the License.
 
+import csv
 import unittest
 from unittest.mock import Mock, patch
 
@@ -21,6 +22,7 @@ from parameterized import parameterized
 from phantom.action_result import ActionResult
 
 from silentpush_utils import RetVal, SilentpushUtils, Validator
+
 
 PARAM_VALUE = "{{param_value}}"
 
@@ -55,13 +57,9 @@ class TestValidateIntegerMethod(unittest.TestCase):
             ["integer", 10, 10.0, ""],
         ]
     )
-    def test_validate_integer_pass(
-        self, _, input_value, expected_value, expected_message
-    ):
+    def test_validate_integer_pass(self, _, input_value, expected_value, expected_message):
         """Test the valid cases for the validate integer method."""
-        ret_val, output = self.util.validate_integer(
-            self.action_result, input_value, "delta", True
-        )
+        ret_val, output = self.util.validate_integer(self.action_result, input_value, "delta", True)
 
         self.assertTrue(ret_val)
         self.assertEqual(output, expected_value)
@@ -69,40 +67,16 @@ class TestValidateIntegerMethod(unittest.TestCase):
 
     @parameterized.expand(
         [
-            [
-                "zero_not_allowed",
-                "0",
-                "Please provide a non-zero integer value in the 'delta' parameter",
-            ],
-            [
-                "alphanumeric",
-                "abc12",
-                "Please provide a valid integer value in the 'delta' parameter",
-            ],
-            [
-                "unicode",
-                "ト日本標準時ﬗ╬⎋⅍ⅎ€",
-                "Please provide a valid integer value in the 'delta' parameter",
-            ],
-            [
-                "float",
-                "10.5",
-                "Please provide a valid integer value in the 'delta' parameter",
-            ],
-            [
-                "negative",
-                -10,
-                "Please provide a positive integer value in the 'delta' parameter",
-            ],
+            ["zero_not_allowed", "0", "Please provide a non-zero integer value in the 'delta' parameter"],
+            ["alphanumeric", "abc12", "Please provide a valid integer value in the 'delta' parameter"],
+            ["unicode", "ト日本標準時ﬗ╬⎋⅍ⅎ€", "Please provide a valid integer value in the 'delta' parameter"],
+            ["float", "10.5", "Please provide a valid integer value in the 'delta' parameter"],
+            ["negative", -10, "Please provide a positive integer value in the 'delta' parameter"],
         ]
     )
-    def test_validate_integer_fail(
-        self, _, input_value, expected_message, allow_negative=False
-    ):
+    def test_validate_integer_fail(self, _, input_value, expected_message, allow_negative=False):
         """Test the failed cases for the validate integer method."""
-        ret_val, output = self.util.validate_integer(
-            self.action_result, input_value, "delta", False, allow_negative
-        )
+        ret_val, output = self.util.validate_integer(self.action_result, input_value, "delta", False, allow_negative)
 
         self.assertFalse(ret_val)
         self.assertIsNone(output)
@@ -119,9 +93,7 @@ class TestValidateDictMethod(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([["valid JSON string", "{'ok': True}", "", {"ok": True}, ""]])
-    def test_validate_dict_pass(
-        self, _, input_value, key, expected_value, expected_message
-    ):
+    def test_validate_dict_pass(self, _, input_value, key, expected_value, expected_message):
         """Test the valid cases for the validate dict method."""
         ret_val, output = self.util.validate_dict(self.action_result, input_value, key)
 
@@ -131,25 +103,11 @@ class TestValidateDictMethod(unittest.TestCase):
 
     @parameterized.expand(
         [
-            [
-                "invalid JSON",
-                "{'ok': abc}",
-                "payload",
-                None,
-                "Please provide a valid JSON value for the 'payload' parameter",
-            ],
-            [
-                "Not dict type",
-                "[{'ok': True}]",
-                "payload",
-                None,
-                "Please provide a valid JSON value for the 'payload' parameter",
-            ],
+            ["invalid JSON", "{'ok': abc}", "payload", None, "Please provide a valid JSON value for the 'payload' parameter"],
+            ["Not dict type", "[{'ok': True}]", "payload", None, "Please provide a valid JSON value for the 'payload' parameter"],
         ]
     )
-    def test_validate_dict_fail(
-        self, _, input_value, key, expected_value, expected_message
-    ):
+    def test_validate_dict_fail(self, _, input_value, key, expected_value, expected_message):
         """Test the failed cases for the validate dict method."""
         ret_val, output = self.util.validate_dict(self.action_result, input_value, key)
 
@@ -168,36 +126,20 @@ class TestValidateBooleanMethod(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand([["valid Boolean", True, "", True, ""]])
-    def test_validate_boolean_pass(
-        self, _, input_value, key, expected_value, expected_message
-    ):
+    def test_validate_boolean_pass(self, _, input_value, key, expected_value, expected_message):
         """Test the valid cases for the validate boolean method."""
-        ret_val, output = self.util.validate_boolean(
-            self.action_result, input_value, key
-        )
+        ret_val, output = self.util.validate_boolean(self.action_result, input_value, key)
 
         self.assertTrue(ret_val)
         self.assertEqual(output, expected_value)
         self.assertEqual(self.action_result.get_message(), expected_message)
 
     @parameterized.expand(
-        [
-            [
-                "invalid Boolean",
-                "abc",
-                "is_allowed",
-                None,
-                "Please provide a valid boolean value for the 'is_allowed' parameter",
-            ]
-        ]
+        [["invalid Boolean", "abc", "is_allowed", None, "Please provide a valid boolean value for the 'is_allowed' parameter"]]
     )
-    def test_validate_boolean_fail(
-        self, _, input_value, key, expected_value, expected_message
-    ):
+    def test_validate_boolean_fail(self, _, input_value, key, expected_value, expected_message):
         """Test the failed cases for the validate boolean method."""
-        ret_val, output = self.util.validate_boolean(
-            self.action_result, input_value, key
-        )
+        ret_val, output = self.util.validate_boolean(self.action_result, input_value, key)
 
         self.assertFalse(ret_val)
         self.assertEqual(output, expected_value)
@@ -220,19 +162,10 @@ class TestGetErrorMessageFromException(unittest.TestCase):
             [
                 "exception_without_args",
                 Exception(),
-                "Error message: Error message unavailable. "
-                "Please check the asset configuration and|or action parameters",
+                "Error message: Error message unavailable. Please check the asset configuration and|or action parameters",
             ],
-            [
-                "exception_with_single_arg",
-                Exception("tests message"),
-                "Error message: tests message",
-            ],
-            [
-                "exception_with_multiple_args",
-                Exception("tests code", "tests message"),
-                "Error code: tests code. " "Error message: tests message",
-            ],
+            ["exception_with_single_arg", Exception("tests message"), "Error message: tests message"],
+            ["exception_with_multiple_args", Exception("tests code", "tests message"), "Error code: tests code. Error message: tests message"],
         ]
     )
     def test_get_error_message_from_exception(self, _, input_value, expected_message):
@@ -251,17 +184,11 @@ class TestProcessEmptyResponse(unittest.TestCase):
         self.action_result = ActionResult(dict())
         return super().setUp()
 
-    @parameterized.expand(
-        [["success_code", 200, True, {}], ["error_code", 404, False, None]]
-    )
-    def test_process_empty_response(
-        self, _, mock_code, expected_status, expected_value
-    ):
+    @parameterized.expand([["success_code", 200, True, {}], ["error_code", 404, False, None]])
+    def test_process_empty_response(self, _, mock_code, expected_status, expected_value):
         """Test the pass and fail cases of process empty response method."""
         self.response.status_code = mock_code
-        status, value = self.util._process_empty_response(
-            self.response, self.action_result
-        )
+        status, value = self.util._process_empty_response(self.response, self.action_result)
         self.assertEqual(status, expected_status)
         self.assertEqual(value, expected_value)
 
@@ -278,36 +205,17 @@ class TestProcessHtmlResponse(unittest.TestCase):
 
     @parameterized.expand(
         [
-            [
-                "no_response_text",
-                "",
-                False,
-                "Status code: 402, Data from server: Cannot parse error details",
-            ],
-            [
-                "normal_response",
-                "Oops!<script>document.getElementById('demo')</script>",
-                False,
-                "Status code: 402, Data from server: Oops!",
-            ],
-            [
-                "large_response",
-                "".join([str(i) for i in range(502)]),
-                False,
-                "Error parsing html response",
-            ],
+            ["no_response_text", "", False, "Status code: 402, Data from server: Cannot parse error details"],
+            ["normal_response", "Oops!<script>document.getElementById('demo')</script>", False, "Status code: 402, Data from server: Oops!"],
+            ["large_response", "".join([str(i) for i in range(502)]), False, "Error parsing html response"],
         ]
     )
-    def test_process_html_response(
-        self, _, response_value, expected_value, expected_message
-    ):
+    def test_process_html_response(self, _, response_value, expected_value, expected_message):
         """Test the pass and fail cases of process html response method."""
         if response_value:
             self.response.text = response_value
         self.response.status_code = 402
-        status, value = self.util._process_html_response(
-            self.response, self.action_result
-        )
+        status, value = self.util._process_html_response(self.response, self.action_result)
         self.assertEqual(status, expected_value)
         self.assertEqual(self.action_result.get_message(), expected_message)
         self.assertIsNone(value)
@@ -319,9 +227,7 @@ class TestProcessHtmlResponse(unittest.TestCase):
         response_obj.status_code = 200
         response_obj.headers = {"Content-Type": "text/html; charset=utf-8"}
 
-        ret_val, response = self.util._process_response(
-            response_obj, self.action_result
-        )
+        ret_val, response = self.util._process_response(response_obj, self.action_result)
         self.assertFalse(ret_val)
         self.assertIsNone(response)
 
@@ -340,23 +246,10 @@ class TestProcessJsonResponse(unittest.TestCase):
 
     @parameterized.expand(
         [
-            [
-                "valid_success_json_response",
-                200,
-                True,
-                {"results": []},
-                {"results": []},
-            ],
+            ["valid_success_json_response", 200, True, {"results": []}, {"results": []}],
             ["valid_failure_json_response", 404, False, {"status": "NOT_FOUND"}, None],
             ["invalid_json_response", 404, False, KeyError("Invalid Json"), None],
-            [
-                "valid_error_json_response",
-                200,
-                False,
-                {"status_code": 200, "response": {"error": "ERROR"}},
-                None,
-                "response.error",
-            ],
+            ["valid_error_json_response", 200, False, {"status_code": 200, "response": {"error": "ERROR"}}, None, "response.error"],
             [
                 "valid_error_json_response",
                 200,
@@ -367,24 +260,14 @@ class TestProcessJsonResponse(unittest.TestCase):
             ],
         ]
     )
-    def test_process_json_response(
-        self,
-        name,
-        mock_code,
-        expected_status,
-        mock_response,
-        expected_value,
-        error_path=None,
-    ):
+    def test_process_json_response(self, name, mock_code, expected_status, mock_response, expected_value, error_path=None):
         """Test the pass and fail cases of process json response method."""
         self.response.status_code = mock_code
         if "invalid_json_response" in name:
             self.response.json.side_effect = mock_response
         else:
             self.response.json.return_value = mock_response
-        status, value = self.util._process_json_response(
-            self.response, self.action_result, error_path
-        )
+        status, value = self.util._process_json_response(self.response, self.action_result, error_path)
         self.assertEqual(status, expected_status)
         self.assertEqual(value, expected_value)
 
@@ -403,14 +286,10 @@ class TestGeneralCases(unittest.TestCase):
 
     def test_make_rest_call_invalid_method(self):
         """Test the make_rest_call with invalid method."""
-        ret_val, response = self.util.make_rest_call(
-            "/endpoint", self.action_result, method="invalid_method"
-        )
+        ret_val, response = self.util.make_rest_call("/endpoint", self.action_result, method="invalid_method")
         self.assertFalse(ret_val)
         self.assertIsNone(response)
-        self.assertEqual(
-            self.action_result.get_message(), "Invalid method: invalid_method"
-        )
+        self.assertEqual(self.action_result.get_message(), "Invalid method: invalid_method")
 
     @patch("silentpush_utils.requests.get")
     def test_make_rest_call_throw_exception(self, mock_get):
@@ -420,10 +299,7 @@ class TestGeneralCases(unittest.TestCase):
         ret_val, response = self.util.make_rest_call("/endpoint", self.action_result)
         self.assertFalse(ret_val)
         self.assertIsNone(response)
-        self.assertEqual(
-            self.action_result.get_message(),
-            "Error Connecting to server. Details: ('error code', 'error message')",
-        )
+        self.assertEqual(self.action_result.get_message(), "Error Connecting to server. Details: ('error code', 'error message')")
 
     def test_process_response_unknown_fail(self):
         """Test the _process_response for unknown response."""
@@ -432,15 +308,10 @@ class TestGeneralCases(unittest.TestCase):
         response_obj.status_code = 500
         response_obj.headers = {}
 
-        ret_val, response = self.util._process_response(
-            response_obj, self.action_result
-        )
+        ret_val, response = self.util._process_response(response_obj, self.action_result)
         self.assertFalse(ret_val)
         self.assertIsNone(response)
-        self.assertIn(
-            "Can't process response from server. Status Code: 500 Data from server: dummy content",
-            self.action_result.get_message(),
-        )
+        self.assertIn("Can't process response from server. Status Code: 500 Data from server: dummy content", self.action_result.get_message())
 
 
 class TestFindValueByPattern(unittest.TestCase):
@@ -481,17 +352,8 @@ class TestGenerateJsonBody(unittest.TestCase):
         allow_empty = {}
         param = {"param_value": "dynamic_value"}
         default_values = {"default_value": "default_value"}
-        expected_body = {
-            "key1": "value1",
-            "key2": "dynamic_value",
-            "key3": "default_value",
-        }
-        self.assertEqual(
-            util.generate_json_body(
-                body, allow_none, allow_empty, param, default_values
-            ),
-            expected_body,
-        )
+        expected_body = {"key1": "value1", "key2": "dynamic_value", "key3": "default_value"}
+        self.assertEqual(util.generate_json_body(body, allow_none, allow_empty, param, default_values), expected_body)
 
     def test_generate_json_body_allow_none(self):
         """Test JSON body generation with fields allowed to be None."""
@@ -502,12 +364,7 @@ class TestGenerateJsonBody(unittest.TestCase):
         param = {"param_value": "dynamic_value"}
         default_values = {}
         expected_body = {"key1": "value1", "key2": "dynamic_value", "key3": None}
-        self.assertEqual(
-            util.generate_json_body(
-                body, allow_none, allow_empty, param, default_values
-            ),
-            expected_body,
-        )
+        self.assertEqual(util.generate_json_body(body, allow_none, allow_empty, param, default_values), expected_body)
 
     def test_generate_json_body_allow_empty(self):
         """Test JSON body generation with fields that can be empty based on their type."""
@@ -520,26 +377,11 @@ class TestGenerateJsonBody(unittest.TestCase):
             "key5": "{{should_be_empty_dict}}",
         }
         allow_none = []
-        allow_empty = {
-            "should_be_empty_string": "string",
-            "should_be_empty_list": "list",
-            "should_be_empty_dict": "dict",
-        }
+        allow_empty = {"should_be_empty_string": "string", "should_be_empty_list": "list", "should_be_empty_dict": "dict"}
         param = {"param_value": "dynamic_value"}
         default_values = {}
-        expected_body = {
-            "key1": "value1",
-            "key2": "dynamic_value",
-            "key3": "",
-            "key4": [],
-            "key5": {},
-        }
-        self.assertEqual(
-            util.generate_json_body(
-                body, allow_none, allow_empty, param, default_values
-            ),
-            expected_body,
-        )
+        expected_body = {"key1": "value1", "key2": "dynamic_value", "key3": "", "key4": [], "key5": {}}
+        self.assertEqual(util.generate_json_body(body, allow_none, allow_empty, param, default_values), expected_body)
 
 
 class TestInvokeAPI(unittest.TestCase):
@@ -549,6 +391,7 @@ class TestInvokeAPI(unittest.TestCase):
         """Set up method for the tests."""
         self.mock_connector = Mock()
         self.mock_connector.config = {"verify_server_cert": False}
+        self.mock_connector._verify = False
         self.util = SilentpushUtils(self.mock_connector)
         return super().setUp()
 
@@ -573,6 +416,45 @@ class TestInvokeAPI(unittest.TestCase):
         self.assertIsInstance(response, requests.exceptions.ConnectTimeout)
 
 
+class TestExportSecurityHelpers(unittest.TestCase):
+    """Test export URL confinement and spreadsheet-safe CSV output."""
+
+    @parameterized.expand(
+        [
+            ["default_https", "https://app.silentpush.com/app/v1/export/organization-exports/feed.csv"],
+            ["explicit_443", "https://app.silentpush.com:443/app/v1/export/organization-exports/feed.csv?download=true"],
+        ]
+    )
+    def test_validate_export_url_pass(self, _, url):
+        self.assertTrue(SilentpushUtils._validate_export_url(url))
+
+    @parameterized.expand(
+        [
+            ["http", "http://app.silentpush.com/app/v1/export/feed.csv"],
+            ["wrong_host", "https://attacker.example/app/v1/export/feed.csv"],
+            ["host_suffix", "https://app.silentpush.com.attacker.example/app/v1/export/feed.csv"],
+            ["credentials", "https://user@app.silentpush.com/app/v1/export/feed.csv"],
+            ["non_default_port", "https://app.silentpush.com:8443/app/v1/export/feed.csv"],
+            ["wrong_path", "https://app.silentpush.com/admin/feed.csv"],
+            ["path_traversal", "https://app.silentpush.com/app/v1/export/../admin/feed.csv"],
+            ["encoded_path_traversal", "https://app.silentpush.com/app/v1/export/%2e%2e/admin/feed.csv"],
+            ["fragment", "https://app.silentpush.com/app/v1/export/feed.csv#fragment"],
+        ]
+    )
+    def test_validate_export_url_fail(self, _, url):
+        self.assertFalse(SilentpushUtils._validate_export_url(url))
+
+    def test_sanitize_csv_neutralizes_formula_cells(self):
+        response = 'normal,=formula,+sum,-value,@command,"\tTabbed","\rCarriage"\n'
+        expected = "normal,'=formula,'+sum,'-value,'@command,'\tTabbed,'\rCarriage\n"
+
+        self.assertEqual(SilentpushUtils._sanitize_csv(response), expected)
+
+    def test_sanitize_csv_rejects_malformed_input(self):
+        with self.assertRaises(csv.Error):
+            SilentpushUtils._sanitize_csv('"unterminated')
+
+
 class TestValidateDropdownMethod(unittest.TestCase):
     """Class to test the validate_dropdown method."""
 
@@ -584,41 +466,22 @@ class TestValidateDropdownMethod(unittest.TestCase):
         return super().setUp()
 
     @parameterized.expand(
-        [
-            ["valid_option1", "option1", "value1", ""],
-            ["valid_option2", "option2", "value2", ""],
-            ["valid_option3", "option3", "value3", ""],
-        ]
+        [["valid_option1", "option1", "value1", ""], ["valid_option2", "option2", "value2", ""], ["valid_option3", "option3", "value3", ""]]
     )
-    def test_validate_dropdown_pass(
-        self, _, input_value, expected_value, expected_message
-    ):
+    def test_validate_dropdown_pass(self, _, input_value, expected_value, expected_message):
         """Test the valid cases for the validate dropdown method."""
-        ret_val, output = self.util.validate_dropdown(
-            self.action_result, input_value, "choice", self.dropdown
-        )
+        ret_val, output = self.util.validate_dropdown(self.action_result, input_value, "choice", self.dropdown)
 
         self.assertTrue(ret_val)
         self.assertEqual(output, expected_value)
         self.assertEqual(self.action_result.get_message(), expected_message)
 
     @parameterized.expand(
-        [
-            [
-                "invalid_option",
-                "option4",
-                None,
-                'Invalid \'choice\' selected. Must be one of: ["option1", "option2", "option3"].',
-            ]
-        ]
+        [["invalid_option", "option4", None, 'Invalid \'choice\' selected. Must be one of: ["option1", "option2", "option3"].']]
     )
-    def test_validate_dropdown_fail(
-        self, _, input_value, expected_value, expected_message
-    ):
+    def test_validate_dropdown_fail(self, _, input_value, expected_value, expected_message):
         """Test the failed cases for the validate dropdown method."""
-        ret_val, output = self.util.validate_dropdown(
-            self.action_result, input_value, "choice", self.dropdown
-        )
+        ret_val, output = self.util.validate_dropdown(self.action_result, input_value, "choice", self.dropdown)
 
         self.assertFalse(ret_val)
         self.assertIsNone(output)

@@ -37,9 +37,7 @@ class ListDomainInformation(BaseAction):
         Step 8: Fetch Whois Information, Optional
         Step 9: Handle the response
         """
-        self._connector.save_progress(
-            consts.EXECUTION_START_MESSAGE.format("list_domain_information")
-        )
+        self._connector.save_progress(consts.EXECUTION_START_MESSAGE.format("list_domain_information"))
 
         ret_val = self.__validate_params()
         if phantom.is_fail(ret_val):
@@ -48,9 +46,7 @@ class ListDomainInformation(BaseAction):
         request_body = self.__get_request_body("domains", self._param["domains"])
         endpoint, method = self.__get_request_url_and_method("domain_info")
 
-        ret_val, response = self.__make_rest_call(
-            url=endpoint, method=method, body=request_body
-        )
+        ret_val, response = self.__make_rest_call(url=endpoint, method=method, body=request_body)
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
@@ -59,9 +55,7 @@ class ListDomainInformation(BaseAction):
 
         if self._param.get("fetch_risk_score", False):
             endpoint, method = self.__get_request_url_and_method("risk_score")
-            ret_val, response = self.__make_rest_call(
-                url=endpoint, method=method, body=request_body
-            )
+            ret_val, response = self.__make_rest_call(url=endpoint, method=method, body=request_body)
             if phantom.is_fail(ret_val):
                 return self._action_result.get_status()
             output_response["risk_score"] = response
@@ -69,9 +63,7 @@ class ListDomainInformation(BaseAction):
         if self._param.get("fetch_whois_info", False):
             result = []
             for domain in self._param["domains"]:
-                endpoint, method = self.__get_request_url_and_method(
-                    "live_whois", domain
-                )
+                endpoint, method = self.__get_request_url_and_method("live_whois", domain)
                 ret_val, response = self.__make_rest_call(url=endpoint, method=method)
                 if phantom.is_fail(ret_val):
                     return self._action_result.get_status()
@@ -108,11 +100,7 @@ class ListDomainInformation(BaseAction):
             self._param["fetch_whois_info"] = value
 
         if "domains" in self._param:
-            domain_list = [
-                clean_domain
-                for domain in self._param["domains"].split(",")
-                if (clean_domain := domain.strip())
-            ]
+            domain_list = [clean_domain for domain in self._param["domains"].split(",") if (clean_domain := domain.strip())]
             if not domain_list:
                 return self._action_result.set_status(
                     phantom.APP_ERROR,
@@ -130,9 +118,7 @@ class ListDomainInformation(BaseAction):
         allow_empty = {}
         default_values = {}
 
-        return self._connector.util.generate_json_body(
-            body, allow_none, allow_empty, self._param, default_values
-        )
+        return self._connector.util.generate_json_body(body, allow_none, allow_empty, self._param, default_values)
 
     def __get_request_url_and_method(self, request, query_param=None):
         """Get request endpoint and method."""
@@ -142,9 +128,7 @@ class ListDomainInformation(BaseAction):
         elif request == "risk_score":
             endpoint = consts.LIST_DOMAIN_ENDPOINT_RISK_SCORE_ENDPOINT
         elif request == "live_whois":
-            endpoint = consts.LIST_DOMAIN_ENDPOINT_WHOIS_INFO_ENDPOINT.format(
-                query_param
-            )
+            endpoint = consts.LIST_DOMAIN_ENDPOINT_WHOIS_INFO_ENDPOINT.format(query_param)
             method = "get"
 
         return endpoint, method
@@ -159,7 +143,7 @@ class ListDomainInformation(BaseAction):
         }
 
         if param:
-            args["endpoint"] = f'{args["endpoint"]}?{urlencode(param)}'
+            args["endpoint"] = f"{args['endpoint']}?{urlencode(param)}"
 
         if body:
             args["json"] = body
@@ -171,17 +155,14 @@ class ListDomainInformation(BaseAction):
     def __handle_response(self, ret_val, response):
         """Process response received from the third party API."""
         if response.get("domain_information"):
-            response["domain_information"] = (
-                response["domain_information"].get("response", {}).get("domaininfo", {})
-            )
+            response["domain_information"] = response["domain_information"].get("response", {}).get("domaininfo", {})
 
         if response.get("risk_score"):
             response["risk_score"] = response["risk_score"].get("response", {})
 
         if response.get("live_whois_information"):
             response["live_whois_information"] = [
-                result.get("response", {}).get("whois_live", {})
-                for result in response["live_whois_information"]
+                result.get("response", {}).get("whois_live", {}) for result in response["live_whois_information"]
             ]
 
         self._action_result.add_data(response)
@@ -189,6 +170,4 @@ class ListDomainInformation(BaseAction):
         if phantom.is_fail(ret_val):
             return self._action_result.get_status()
 
-        return self._action_result.set_status(
-            phantom.APP_SUCCESS, consts.ACTION_LIST_DOMAIN_INFO_SUCCESS_RESPONSE
-        )
+        return self._action_result.set_status(phantom.APP_SUCCESS, consts.ACTION_LIST_DOMAIN_INFO_SUCCESS_RESPONSE)

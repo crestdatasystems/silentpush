@@ -33,9 +33,7 @@ class TestConnectivity(BaseAction):
         Step 6: Invoke API
         Step 7: Handle the response
         """
-        self._connector.save_progress(
-            consts.TEST_CONNECTIVITY_START_MESSAGE.format("Silent Push")
-        )
+        self._connector.save_progress(consts.TEST_CONNECTIVITY_START_MESSAGE.format("Silent Push"))
 
         endpoint, method = self.__get_request_url_and_method()
 
@@ -51,12 +49,7 @@ class TestConnectivity(BaseAction):
 
     def __make_rest_call(self, url, method, headers=None, param=None, body=None):
         """Invoke reset API."""
-        args = {
-            "endpoint": url,
-            "action_result": self._action_result,
-            "method": method.lower(),
-            "headers": headers or {},
-        }
+        args = {"endpoint": url, "action_result": self._action_result, "method": method.lower(), "headers": headers or {}}
 
         return self._connector.util.make_rest_call(**args)
 

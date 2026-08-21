@@ -15,6 +15,7 @@
 
 from . import silentpush_constant
 
+
 LIST_DOMAIN_INFORMATION_DOMAIN_VALID_RESP = {
     "status_code": 200,
     "error": None,
@@ -108,10 +109,7 @@ GET_DOMAIN_CERTIFICATES_VALID_RESP = {
                 "chain": ["R3", "ISRG Root X1"],
                 "date": 20240401,
                 "domain": silentpush_constant.ABC_COM,
-                "domains": [
-                    "*.app-rainier-temp.playground.scs.splunk.com",
-                    "*.rainier.playground.scs.splunk.com",
-                ],
+                "domains": ["*.app-rainier-temp.playground.scs.splunk.com", "*.rainier.playground.scs.splunk.com"],
                 "fingerprint": "1B:8E:88:CA:EE:30:E5:1C:F8:C7:56:C1:60:EE:CC:F2:01:5B:CF:5A",
                 "fingerprint_md5": "49b367eac206301f76b98f89a892040a",  # pragma: allowlist secret
                 "fingerprint_sha1": "1b8e88caee30e51cf8c756c160eeccf2015bcf5a",  # pragma: allowlist secret
@@ -135,10 +133,7 @@ GET_DOMAIN_CERTIFICATES_VALID_RESP = {
                 "chain": [silentpush_constant.CHAIN, "DigiCert Global Root G2"],
                 "date": 20240318,
                 "domain": silentpush_constant.ABC_COM,
-                "domains": [
-                    "arewefastyet-stg.sv.splunk.com",
-                    "www.arewefastyet-stg.sv.splunk.com",
-                ],
+                "domains": ["arewefastyet-stg.sv.splunk.com", "www.arewefastyet-stg.sv.splunk.com"],
                 "fingerprint": "C9:52:A5:DF:F3:55:40:96:D0:20:37:CD:BF:A3:FA:D8:D8:65:FA:3B",
                 "fingerprint_md5": "95f9331db89b2b4d90a5eb73645adcde",  # pragma: allowlist secret
                 "fingerprint_sha1": "c952a5dff3554096d02037cdbfa3fad8d865fa3b",  # pragma: allowlist secret
@@ -174,24 +169,9 @@ DOMAIN_SEARCH_VALID_RESP = {
     "error": None,
     "response": {
         "records": [
-            {
-                "asn_diversity": 1,
-                "host": "0-------oive.gw.prod.careem-pay.com",
-                "ip_diversity_all": 18,
-                "ip_diversity_groups": 6,
-            },
-            {
-                "asn_diversity": 1,
-                "host": "0-------promote.livejournal.com",
-                "ip_diversity_all": 2,
-                "ip_diversity_groups": 1,
-            },
-            {
-                "asn_diversity": 1,
-                "host": "0-------qtler.gw.prod.careem-pay.com",
-                "ip_diversity_all": 13,
-                "ip_diversity_groups": 5,
-            },
+            {"asn_diversity": 1, "host": "0-------oive.gw.prod.careem-pay.com", "ip_diversity_all": 18, "ip_diversity_groups": 6},
+            {"asn_diversity": 1, "host": "0-------promote.livejournal.com", "ip_diversity_all": 2, "ip_diversity_groups": 1},
+            {"asn_diversity": 1, "host": "0-------qtler.gw.prod.careem-pay.com", "ip_diversity_all": 13, "ip_diversity_groups": 5},
             {
                 "asn_diversity": 1,
                 "host": "0-------zpital-of-philadelphia.gw.prod.careem-pay.com",
@@ -206,51 +186,17 @@ LIST_DOMAIN_INFRATAGS_VALID_RESP = {
     "error": None,
     "response": {
         "infratags": [
-            {
-                "domain": silentpush_constant.ABC_COM,
-                "mode": "padns",
-                "tag": "abc.com:abc.com:google:markmonitor",
-            },
-            {
-                "domain": silentpush_constant.ABCD_COM,
-                "mode": "padns",
-                "tag": "abc.com:googledomains.com:amazon:keysystemsgmbh",
-            },
-            {
-                "domain": silentpush_constant.ABC_COM,
-                "mode": "padns",
-                "tag": "iphmx.com:markmonitor.zone:amazon:markmonitor",
-            },
-            {
-                "domain": silentpush_constant.ABC_COM,
-                "mode": "padns",
-                "tag": "outlook.com:cloudflare.com:cloudflarenet:enom",
-            },
+            {"domain": silentpush_constant.ABC_COM, "mode": "padns", "tag": "abc.com:abc.com:google:markmonitor"},
+            {"domain": silentpush_constant.ABCD_COM, "mode": "padns", "tag": "abc.com:googledomains.com:amazon:keysystemsgmbh"},
+            {"domain": silentpush_constant.ABC_COM, "mode": "padns", "tag": "iphmx.com:markmonitor.zone:amazon:markmonitor"},
+            {"domain": silentpush_constant.ABC_COM, "mode": "padns", "tag": "outlook.com:cloudflare.com:cloudflarenet:enom"},
         ],
         "tag_clusters": [
             {
                 "25": [
-                    {
-                        "domains": [
-                            silentpush_constant.ABCD_COM,
-                            silentpush_constant.ABC_COM,
-                        ],
-                        "match": "abc.com:_:_:_",
-                    },
-                    {
-                        "domains": [
-                            silentpush_constant.ABC_COM,
-                            silentpush_constant.ABC_COM,
-                        ],
-                        "match": "_:_:_:markmonitor",
-                    },
-                    {
-                        "domains": [
-                            silentpush_constant.ABC_COM,
-                            silentpush_constant.ABCD_COM,
-                        ],
-                        "match": "_:_:amazon:_",
-                    },
+                    {"domains": [silentpush_constant.ABCD_COM, silentpush_constant.ABC_COM], "match": "abc.com:_:_:_"},
+                    {"domains": [silentpush_constant.ABC_COM, silentpush_constant.ABC_COM], "match": "_:_:_:markmonitor"},
+                    {"domains": [silentpush_constant.ABC_COM, silentpush_constant.ABCD_COM], "match": "_:_:amazon:_"},
                 ]
             },
             {"50": []},
@@ -296,12 +242,7 @@ GET_ENRICHMENT_DATA_VALID_RESP = {
             "whois_created_date": "",
             "zone": "live",
         },
-        "ip_diversity": {
-            "asn_diversity": "1",
-            "host": silentpush_constant.ABCDE_TK,
-            "ip_diversity_all": "2",
-            "ip_diversity_groups": "1",
-        },
+        "ip_diversity": {"asn_diversity": "1", "host": silentpush_constant.ABCDE_TK, "ip_diversity_all": "2", "ip_diversity_groups": "1"},
         "listing_score": 0,
         "listing_score_explain": {},
         "ns_reputation": {
@@ -370,11 +311,7 @@ GET_ENRICHMENT_DATA_VALID_RESP = {
             "certificates": [
                 {
                     "domain": "sni.cloudflaressl.com",
-                    "domains": [
-                        "*.abcde.tk",
-                        "sni.cloudflaressl.com",
-                        silentpush_constant.ABCDE_TK,
-                    ],
+                    "domains": ["*.abcde.tk", "sni.cloudflaressl.com", silentpush_constant.ABCDE_TK],
                     "fingerprint_sha1": "27f225c21f3b56d85aee10224e82efb0a7748e83",  # pragma: allowlist secret
                     "hostname": silentpush_constant.ABCDE_TK,
                     "ip": silentpush_constant.IPV6_EXAMPLE,
@@ -401,8 +338,7 @@ GET_ENRICHMENT_DATA_VALID_RESP = {
             "headers": [
                 {
                     "headers": {
-                        "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, "
-                        "pre-check=0",
+                        "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
                         "content-type": "text/html; charset=UTF-8",
                         "date": "Tue, 06 Dec 2022 21:25:43 GMT",
                         "expires": "Thu, 01 Jan 1970 00:00:01 GMT",
@@ -541,9 +477,7 @@ GET_ENRICHMENT_DATA_VALID_RESP = {
                 },
                 "sinkhole_info": {"known_sinkhole_ip": False, "tags": []},
                 "sp_risk_score": 1,
-                "sp_risk_score_explain": {
-                    "sp_risk_score_decider": "asn_takedown_reputation"
-                },
+                "sp_risk_score_explain": {"sp_risk_score_decider": "asn_takedown_reputation"},
                 "subnet": "167.82.0.0/17",
                 "subnet_allocation_age": 1246,
                 "subnet_allocation_date": 20190709,
@@ -640,44 +574,28 @@ GET_ASN_REPUTATION_VALID_RESP = {
             {
                 "asn": 14618,
                 "asn_reputation": 34,
-                "asn_reputation_explain": {
-                    "ips_in_asn": 17160960,
-                    "ips_num_active": 13901839,
-                    "ips_num_listed": 295,
-                },
+                "asn_reputation_explain": {"ips_in_asn": 17160960, "ips_num_active": 13901839, "ips_num_listed": 295},
                 "asname": silentpush_constant.AS_NAME,
                 "date": 20240326,
             },
             {
                 "asn": 14618,
                 "asn_reputation": 36,
-                "asn_reputation_explain": {
-                    "ips_in_asn": 17160960,
-                    "ips_num_active": 5691860,
-                    "ips_num_listed": 293,
-                },
+                "asn_reputation_explain": {"ips_in_asn": 17160960, "ips_num_active": 5691860, "ips_num_listed": 293},
                 "asname": silentpush_constant.AS_NAME,
                 "date": 20240325,
             },
             {
                 "asn": 14618,
                 "asn_reputation": 34,
-                "asn_reputation_explain": {
-                    "ips_in_asn": 17160960,
-                    "ips_num_active": 13900703,
-                    "ips_num_listed": 291,
-                },
+                "asn_reputation_explain": {"ips_in_asn": 17160960, "ips_num_active": 13900703, "ips_num_listed": 291},
                 "asname": silentpush_constant.AS_NAME,
                 "date": 20240324,
             },
             {
                 "asn": 14618,
                 "asn_reputation": 34,
-                "asn_reputation_explain": {
-                    "ips_in_asn": 17160704,
-                    "ips_num_active": 13900614,
-                    "ips_num_listed": 296,
-                },
+                "asn_reputation_explain": {"ips_in_asn": 17160704, "ips_num_active": 13900614, "ips_num_listed": 296},
                 "asname": silentpush_constant.AS_NAME,
                 "date": 20240323,
             },
@@ -742,36 +660,16 @@ GET_IPV4_REPUTATION_VALID_RESP = {
     "error": None,
     "response": {
         "ip_reputation_history": [
-            {
-                "date": 20240327,
-                "ip": "8.8.8.8",
-                "ip_reputation": 26,
-                "ip_reputation_explain": {"ip_density": 140767, "names_num_listed": 24},
-            },
-            {
-                "date": 20240326,
-                "ip": "8.8.8.8",
-                "ip_reputation": 26,
-                "ip_reputation_explain": {"ip_density": 140739, "names_num_listed": 24},
-            },
-            {
-                "date": 20240325,
-                "ip": "8.8.8.8",
-                "ip_reputation": 26,
-                "ip_reputation_explain": {"ip_density": 140720, "names_num_listed": 24},
-            },
+            {"date": 20240327, "ip": "8.8.8.8", "ip_reputation": 26, "ip_reputation_explain": {"ip_density": 140767, "names_num_listed": 24}},
+            {"date": 20240326, "ip": "8.8.8.8", "ip_reputation": 26, "ip_reputation_explain": {"ip_density": 140739, "names_num_listed": 24}},
+            {"date": 20240325, "ip": "8.8.8.8", "ip_reputation": 26, "ip_reputation_explain": {"ip_density": 140720, "names_num_listed": 24}},
         ]
     },
 }
 GET_JOB_STATUS_VALID_RESP = {
     "status_code": 200,
     "error": None,
-    "response": {
-        "job_status": {
-            "job_id": "6bd0ba36-9f30-4beb-8a7a-164123ecdc30",
-            "status": "PENDING",
-        }
-    },
+    "response": {"job_status": {"job_id": "6bd0ba36-9f30-4beb-8a7a-164123ecdc30", "status": "PENDING"}},
 }
 GET_NAMESERVER_REPUTATION_VALID_RESP = {
     "status_code": 200,
@@ -782,91 +680,61 @@ GET_NAMESERVER_REPUTATION_VALID_RESP = {
                 "date": 20240409,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 0,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 1,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 1},
             },
             {
                 "date": 20240408,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 0,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 1,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 1},
             },
             {
                 "date": 20240407,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 0,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 1,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 1},
             },
             {
                 "date": 20240406,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 0,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 1,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 1},
             },
             {
                 "date": 20240405,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 0,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 1,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 1},
             },
             {
                 "date": 20240404,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 0,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 1,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 1},
             },
             {
                 "date": 20240403,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 0,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 1,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 1},
             },
             {
                 "date": 20240401,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 63,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 2,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 2},
             },
             {
                 "date": 20240331,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 63,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 2,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 2},
             },
             {
                 "date": 20240330,
                 "ns_server": silentpush_constant.NS_SERVER,
                 "ns_server_reputation": 63,
-                "ns_server_reputation_explain": {
-                    "ns_server_domain_density": 3,
-                    "ns_server_domains_listed": 2,
-                },
+                "ns_server_reputation_explain": {"ns_server_domain_density": 3, "ns_server_domains_listed": 2},
             },
         ]
     },
@@ -876,156 +744,36 @@ GET_SUBNET_REPUTATION_VALID_RESP = {
     "error": None,
     "response": {
         "subnet_reputation_history": [
-            {
-                "date": 20240409,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 12,
-            },
-            {
-                "date": 20240408,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 15,
-            },
-            {
-                "date": 20240407,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 16,
-            },
-            {
-                "date": 20240406,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 15,
-            },
-            {
-                "date": 20240405,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 17,
-            },
-            {
-                "date": 20240404,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 17,
-            },
-            {
-                "date": 20240403,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 15,
-            },
-            {
-                "date": 20240402,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 11,
-            },
-            {
-                "date": 20240401,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 8,
-            },
-            {
-                "date": 20240331,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 12,
-            },
-            {
-                "date": 20240330,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 15,
-            },
-            {
-                "date": 20240329,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 18,
-            },
-            {
-                "date": 20240328,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 15,
-            },
-            {
-                "date": 20240327,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 16,
-            },
-            {
-                "date": 20240326,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 19,
-            },
-            {
-                "date": 20240325,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 19,
-            },
-            {
-                "date": 20240324,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 19,
-            },
-            {
-                "date": 20240323,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 17,
-            },
-            {
-                "date": 20240322,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 19,
-            },
-            {
-                "date": 20240321,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 19,
-            },
-            {
-                "date": 20240320,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 19,
-            },
-            {
-                "date": 20240319,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 14,
-            },
-            {
-                "date": 20240318,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 15,
-            },
-            {
-                "date": 20240317,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 16,
-            },
-            {
-                "date": 20240316,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 17,
-            },
-            {
-                "date": 20240315,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 19,
-            },
-            {
-                "date": 20240314,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 20,
-            },
-            {
-                "date": 20240313,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 21,
-            },
-            {
-                "date": 20240312,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 19,
-            },
-            {
-                "date": 20240311,
-                "subnet": silentpush_constant.SUBNET,
-                "subnet_reputation": 20,
-            },
+            {"date": 20240409, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 12},
+            {"date": 20240408, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 15},
+            {"date": 20240407, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 16},
+            {"date": 20240406, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 15},
+            {"date": 20240405, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 17},
+            {"date": 20240404, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 17},
+            {"date": 20240403, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 15},
+            {"date": 20240402, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 11},
+            {"date": 20240401, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 8},
+            {"date": 20240331, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 12},
+            {"date": 20240330, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 15},
+            {"date": 20240329, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 18},
+            {"date": 20240328, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 15},
+            {"date": 20240327, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 16},
+            {"date": 20240326, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 19},
+            {"date": 20240325, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 19},
+            {"date": 20240324, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 19},
+            {"date": 20240323, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 17},
+            {"date": 20240322, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 19},
+            {"date": 20240321, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 19},
+            {"date": 20240320, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 19},
+            {"date": 20240319, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 14},
+            {"date": 20240318, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 15},
+            {"date": 20240317, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 16},
+            {"date": 20240316, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 17},
+            {"date": 20240315, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 19},
+            {"date": 20240314, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 20},
+            {"date": 20240313, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 21},
+            {"date": 20240312, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 19},
+            {"date": 20240311, "subnet": silentpush_constant.SUBNET, "subnet_reputation": 20},
         ]
     },
 }
@@ -1213,8 +961,7 @@ LIVE_URL_SCAN_VALID_RESP = {
                     "(function(i,s,o,g,r, 12:9Lo73Xy3dYIRWlob6vIwvM7mmHEaCER6b:po73XyNYIRWlobgIQmm2EW6b",
                     'var siteConfig= {"lo 12:EqJmr4KLXIPpup6S1zsE6Sk5ijEgy9J6XfCyusVQGluU5hzOP1/pn/MC/m3/Db:LC'
                     "+2FzL67iYgcECbsVuUz6P1/pn/3/Uv",  # pragma: allowlist secret
-                    '!function(e){var n=" 48:TShMqSVZGPB4JlJMYwFiC0nVHYVnc7eWTYXwNZZq6/viUUAgIB21EqYrsr6eoam4'
-                    ":OwMRiC0npYxUYgLZqSU/EqKaPLA4CIuy",
+                    '!function(e){var n=" 48:TShMqSVZGPB4JlJMYwFiC0nVHYVnc7eWTYXwNZZq6/viUUAgIB21EqYrsr6eoam4:OwMRiC0npYxUYgLZqSU/EqKaPLA4CIuy',
                     "https://www.splunk.com//etc.clientlibs/splunk/core/clientlibs/clientlib-jquery"
                     ".9283f4431df92f66f6d0e4cb812e6d1a.js "
                     "3072:zbPxwcv91BspLL8+SmBQ47GKSO3jgD18bg5GmLeaYUs9sqXTW:zbPGK91W58EBQ47GKwFpqa",
@@ -1337,15 +1084,10 @@ LIVE_URL_SCAN_VALID_RESP = {
             "ssl": {
                 "CHV": "7ef117b4ce58f51d63e20c1422bb549269494c3:x:0002",
                 "SHA1": "22:49:E0:DB:EA:84:C0:40:DC:5E:85:9F:17:28:9B:86:6B:19:EF:1B",
-                "SHA256": "A2:CF:B2:45:79:4F:AE:FF:81:33:5B:56:71:D2:F0:17:FE:43:58:31:19:6D:4B:8D:98:C8:3A:F8:FF:15"
-                ":04:08",
+                "SHA256": "A2:CF:B2:45:79:4F:AE:FF:81:33:5B:56:71:D2:F0:17:FE:43:58:31:19:6D:4B:8D:98:C8:3A:F8:FF:15:04:08",
                 "authority_key_id": "74:85:80:C0:66:C7:DF:37:DE:CF:BD:29:37:AA:03:1D:BE:ED:CD:17",
                 "expired": False,
-                "issuer": {
-                    "common_name": silentpush_constant.CHAIN,
-                    "country": "US",
-                    "organization": "DigiCert Inc",
-                },
+                "issuer": {"common_name": silentpush_constant.CHAIN, "country": "US", "organization": "DigiCert Inc"},
                 "not_after": "2025-03-24T23:59:59Z",
                 "not_before": "2024-03-25T00:00:00Z",
                 "sans": [silentpush_constant.ABCD_COM, silentpush_constant.ABC_COM],
@@ -1376,11 +1118,7 @@ SEARCH_SCAN_DATA_VALID_RESP = {
         "scandata_raw": [
             {
                 "HHV": "ef1c3b01903730bb3ea3502c1d",  # pragma: allowlist secret
-                "adtech": {
-                    "ads_txt": False,
-                    "app_ads_txt": False,
-                    "sellers_json": False,
-                },
+                "adtech": {"ads_txt": False, "app_ads_txt": False, "sellers_json": False},
                 "body_analysis": {
                     "SHV": "9ac3fb2c596644f196b75d6a79",  # pragma: allowlist secret
                     "adsense": [],
@@ -1420,16 +1158,10 @@ SEARCH_SCAN_DATA_VALID_RESP = {
                 "favicon2_murmur3": -2032288512,
                 "favicon2_path": "https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg",
                 "favicon_md5": "",
-                "favicon_urls": [
-                    "https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg"
-                ],
+                "favicon_urls": ["https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg"],
                 "file": False,
                 "file_sha256": "",
-                "geoip": {
-                    "as_org": "CLOUDFLARENET",
-                    "asn": 13335,
-                    "ip": "104.26.10.149",
-                },
+                "geoip": {"as_org": "CLOUDFLARENET", "asn": 13335, "ip": "104.26.10.149"},
                 "header": {
                     "cache-control": "max-age=600, must-revalidate",
                     "connection": "keep-alive",
@@ -1486,11 +1218,7 @@ SEARCH_SCAN_DATA_VALID_RESP = {
                     "SHA256": "4B:7B:E2:3F:61:E5:3A:E8:09:26:72:84:64:0C:CF:BA:25:99:76:B2:73:C6:C0:46:C2:89:61:98:8E:75:DF:21",
                     "authority_key_id": "5A:F3:ED:2B:FC:36:C2:37:79:B9:52:30:EA:54:6F:CF:55:CB:2E:AC",
                     "expired": False,
-                    "issuer": {
-                        "common_name": "E1",
-                        "country": "US",
-                        "organization": "Let's Encrypt",
-                    },
+                    "issuer": {"common_name": "E1", "country": "US", "organization": "Let's Encrypt"},
                     "not_after": "2024-07-14T18:38:24Z",
                     "not_before": "2024-04-15T18:38:25Z",
                     "sans": ["www.silentpush.com"],
@@ -1508,11 +1236,7 @@ SEARCH_SCAN_DATA_VALID_RESP = {
             },
             {
                 "HHV": "1c157123cbaacce690128f3bc9",  # pragma: allowlist secret
-                "adtech": {
-                    "ads_txt": False,
-                    "app_ads_txt": False,
-                    "sellers_json": False,
-                },
+                "adtech": {"ads_txt": False, "app_ads_txt": False, "sellers_json": False},
                 "body_analysis": {
                     "SHV": "f44dc6dc782974928e38501002",  # pragma: allowlist secret
                     "adsense": [],
@@ -1613,11 +1337,7 @@ SEARCH_SCAN_DATA_VALID_RESP = {
             },
             {
                 "HHV": "ef1c3b01903730bb3ea3502c1d",  # pragma: allowlist secret
-                "adtech": {
-                    "ads_txt": False,
-                    "app_ads_txt": False,
-                    "sellers_json": False,
-                },
+                "adtech": {"ads_txt": False, "app_ads_txt": False, "sellers_json": False},
                 "body_analysis": {
                     "SHV": "9ac3fb2c596644f196b75d6a79",  # pragma: allowlist secret
                     "adsense": [],
@@ -1657,16 +1377,10 @@ SEARCH_SCAN_DATA_VALID_RESP = {
                 "favicon2_murmur3": -2032288512,
                 "favicon2_path": "https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg",
                 "favicon_md5": "",
-                "favicon_urls": [
-                    "https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg"
-                ],
+                "favicon_urls": ["https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg"],
                 "file": False,
                 "file_sha256": "",
-                "geoip": {
-                    "as_org": "CLOUDFLARENET",
-                    "asn": 13335,
-                    "ip": "104.26.10.149",
-                },
+                "geoip": {"as_org": "CLOUDFLARENET", "asn": 13335, "ip": "104.26.10.149"},
                 "header": {
                     "cache-control": "max-age=600, must-revalidate",
                     "connection": "keep-alive",
@@ -1721,11 +1435,7 @@ SEARCH_SCAN_DATA_VALID_RESP = {
                     "SHA256": "4B:7B:E2:3F:61:E5:3A:E8:09:26:72:84:64:0C:CF:BA:25:99:76:B2:73:C6:C0:46:C2:89:61:98:8E:75:DF:21",
                     "authority_key_id": "5A:F3:ED:2B:FC:36:C2:37:79:B9:52:30:EA:54:6F:CF:55:CB:2E:AC",
                     "expired": False,
-                    "issuer": {
-                        "common_name": "E1",
-                        "country": "US",
-                        "organization": "Let's Encrypt",
-                    },
+                    "issuer": {"common_name": "E1", "country": "US", "organization": "Let's Encrypt"},
                     "not_after": "2024-07-14T18:38:24Z",
                     "not_before": "2024-04-15T18:38:25Z",
                     "sans": ["www.silentpush.com"],
@@ -1743,11 +1453,7 @@ SEARCH_SCAN_DATA_VALID_RESP = {
             },
             {
                 "HHV": "ef1c3b01903730bb3ea3502c1d",  # pragma: allowlist secret
-                "adtech": {
-                    "ads_txt": False,
-                    "app_ads_txt": False,
-                    "sellers_json": False,
-                },
+                "adtech": {"ads_txt": False, "app_ads_txt": False, "sellers_json": False},
                 "body_analysis": {
                     "SHV": "9ac3fb2c596644f196b75d6a79",  # pragma: allowlist secret
                     "adsense": [],
@@ -1787,16 +1493,10 @@ SEARCH_SCAN_DATA_VALID_RESP = {
                 "favicon2_murmur3": -2032288512,
                 "favicon2_path": "https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg",
                 "favicon_md5": "",
-                "favicon_urls": [
-                    "https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg"
-                ],
+                "favicon_urls": ["https://www.silentpush.com/wp-content/uploads/Silent-Push-Favicon-1.jpg"],
                 "file": False,
                 "file_sha256": "",
-                "geoip": {
-                    "as_org": "CLOUDFLARENET",
-                    "asn": 13335,
-                    "ip": "104.26.10.149",
-                },
+                "geoip": {"as_org": "CLOUDFLARENET", "asn": 13335, "ip": "104.26.10.149"},
                 "header": {
                     "cache-control": "max-age=600, must-revalidate",
                     "connection": "keep-alive",
@@ -1853,11 +1553,7 @@ SEARCH_SCAN_DATA_VALID_RESP = {
                     "SHA256": "4B:7B:E2:3F:61:E5:3A:E8:09:26:72:84:64:0C:CF:BA:25:99:76:B2:73:C6:C0:46:C2:89:61:98:8E:75:DF:21",
                     "authority_key_id": "5A:F3:ED:2B:FC:36:C2:37:79:B9:52:30:EA:54:6F:CF:55:CB:2E:AC",
                     "expired": False,
-                    "issuer": {
-                        "common_name": "E1",
-                        "country": "US",
-                        "organization": "Let's Encrypt",
-                    },
+                    "issuer": {"common_name": "E1", "country": "US", "organization": "Let's Encrypt"},
                     "not_after": "2024-07-14T18:38:24Z",
                     "not_before": "2024-04-15T18:38:25Z",
                     "sans": ["www.silentpush.com"],
@@ -1950,13 +1646,26 @@ VAULT_META_INFO = [
             "sha1": "ba9d018bb2fb512b3fb58c4a015d804372c4f3cb",  # pragma: allowlist secret
             "sha256": "d60a0a0b5bb9157aa3f04a0f666bf86db5c943240e6ae61b2cd5225b29ada768",  # pragma: allowlist secret
         },
-        "aka": [
-            "801138f4-b34f-4f82-9c5c-588cf0c50ea3.jpg",
-            "d57169ea-6181-46d3-b72a-7de47cf97bad.jpg",
-        ],
+        "aka": ["801138f4-b34f-4f82-9c5c-588cf0c50ea3.jpg", "d57169ea-6181-46d3-b72a-7de47cf97bad.jpg"],
         "container_id": 1,
         "contains": ["vault id"],
     }
 ]
 
 IMAGE_RESPONSE = b"/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3N8A"
+
+GET_DATA_EXPORT_VALID_RESP = """
+indicator
+www1.gggatat456.com
+ppp.gggatat456.com
+www.profile-keybord.com
+inretsyvipclubapp.com
+etsyvipclub.xyz
+answerrsdo.shop
+ceip.cloud
+o6ngt.top
+indo39oke.lol
+scottish-images.com
+"""
+
+GET_EXPORT_DATA_INVALID_RESPONSE = {"errors": [{"message": "invalid file name", "code": "invalid"}]}

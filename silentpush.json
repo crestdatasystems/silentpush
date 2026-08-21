@@ -7,18 +7,18 @@
     "logo": "logo_silentpush.svg",
     "logo_dark": "logo_silentpush_dark.svg",
     "product_name": "Silent Push",
-    "python_version": "3, 3.13",
+    "python_version": "3.9, 3.13",
     "product_version_regex": ".*",
     "publisher": "Splunk Community",
     "license": "Copyright (c) 2024-2026 Splunk Inc.",
-    "app_version": "1.2.0",
-    "utctime_updated": "2024-04-02T11:55:08.841379Z",
+    "app_version": "1.1.1",
+    "utctime_updated": "2026-07-21T14:39:32.623158Z",
     "package_name": "phantom_silentpush",
     "main_module": "silentpush_connector.py",
-    "min_phantom_version": "6.2.0",
+    "min_phantom_version": "6.3.0",
     "fips_compliant": true,
     "latest_tested_versions": [
-        "Silent Push Cloud v4.1, May 02, 2024"
+        "Silent Push Cloud v4.1, April 23, 2025"
     ],
     "app_wizard_version": "1.0.0",
     "configuration": {
@@ -27,6 +27,12 @@
             "data_type": "password",
             "required": true,
             "order": 0
+        },
+        "verify_server_cert": {
+            "description": "Verify the Silent Push server certificate for HTTPS connections",
+            "data_type": "boolean",
+            "default": true,
+            "order": 1
         }
     },
     "actions": [
@@ -9351,7 +9357,7 @@
                     "data_path": "action_result.summary.vault_id",
                     "data_type": "string",
                     "example_values": [
-                        "614467d9d91eb84a9696aa3378e0e3fdf94c00ab"
+                        "666666d9d91111111696aa111111e311111100ab"
                     ]
                 },
                 {
@@ -9400,6 +9406,103 @@
                 "title": "Live URL Screenshot"
             },
             "versions": "EQ(*)"
+        },
+        {
+            "action": "get data export",
+            "identifier": "get_data_export",
+            "description": "Get data for Organisation feeds and download as csv file in vault",
+            "verbose": "The Feed URL can be obtained from the Silent Push platform. Go to Data Export > Organization Exports then for a specific feed select Automate Export and click on 'Copy API Endpoint' to get the feed URL.",
+            "type": "investigate",
+            "read_only": true,
+            "parameters": {
+                "feed_url": {
+                    "description": "Silent Push export URL under https://app.silentpush.com/app/v1/export/",
+                    "required": true,
+                    "order": 0,
+                    "data_type": "string"
+                }
+            },
+            "output": [
+                {
+                    "data_path": "action_result.status",
+                    "data_type": "string",
+                    "example_values": [
+                        "success",
+                        "failed"
+                    ]
+                },
+                {
+                    "data_path": "action_result.parameter.feed_url",
+                    "data_type": "string",
+                    "example_values": [
+                        "https://app.silentpush.com/app/v1/export/organization-exports/5000000-4444-aaaa-bbbb-222222222222_enrich.csv"
+                    ],
+                    "column_order": 0,
+                    "column_name": "Feed URL"
+                },
+                {
+                    "data_path": "action_result.data.*.vault_id",
+                    "data_type": "string",
+                    "example_values": [
+                        "666666d9d91111111696aa111111e311111100ab"
+                    ],
+                    "column_order": 1,
+                    "column_name": "Vault_ID",
+                    "contains": [
+                        "vault id"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.errors.*.code",
+                    "data_type": "string",
+                    "example_values": [
+                        "invalid"
+                    ]
+                },
+                {
+                    "data_path": "action_result.data.*.errors.*.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "invalid file format"
+                    ]
+                },
+                {
+                    "data_path": "action_result.summary",
+                    "data_type": "string"
+                },
+                {
+                    "data_path": "action_result.message",
+                    "data_type": "string",
+                    "example_values": [
+                        "Successfully downloaded feed data"
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                },
+                {
+                    "data_path": "summary.total_objects_successful",
+                    "data_type": "numeric",
+                    "example_values": [
+                        1
+                    ]
+                }
+            ],
+            "render": {
+                "type": "table",
+                "title": "Get Data Export"
+            },
+            "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip39_dependencies": {
+        "wheel": []
+    },
+    "pip313_dependencies": {
+        "wheel": []
+    }
 }
